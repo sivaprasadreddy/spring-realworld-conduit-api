@@ -1,0 +1,31 @@
+name: 'spring-realworld-conduit-api'
+services:
+  spring-realworld-conduit-api:
+    image: sivaprasadreddy/spring-realworld-conduit-api
+    container_name: spring-realworld-conduit-api
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: conduit-postgres
+      DB_PORT: 5432
+      DB_DATABASE: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - conduit-postgres
+    deploy:
+      resources:
+        limits:
+          memory: 1024m
+
+  conduit-postgres:
+    image: postgres:16-alpine
+    container_name: conduit-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "65432:5432"
