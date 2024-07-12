@@ -20,6 +20,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
         <spring-modulith.version>1.2.1</spring-modulith.version>
+        <jjwt.version>0.11.5</jjwt.version>
 		<springdoc-openapi.version>2.6.0</springdoc-openapi.version>
         <spotless.version>2.43.0</spotless.version>
         <tc-jooq-codegen-plugin.version>0.0.4</tc-jooq-codegen-plugin.version>
@@ -34,6 +35,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jooq</artifactId>
@@ -191,39 +213,10 @@
                                         <inputSchema>public</inputSchema>
                                         <includes>.*</includes>
                                         <excludes>flyway_schema_history</excludes>
-                                        <!--<forcedTypes>
-                                            <forcedType>
-                                                <userType>com.sivalabs.mrs.users.domain.models.Role</userType>
-                                                <enumConverter>true</enumConverter>
-                                                <includeExpression>public\.users\.role</includeExpression>
-                                            </forcedType>
-                                            <forcedType>
-                                                <userType>com.sivalabs.mrs.orders.domain.models.OrderStatus</userType>
-                                                <enumConverter>true</enumConverter>
-                                                <includeExpression>public\.orders\.status</includeExpression>
-                                            </forcedType>
-                                        </forcedTypes>-->
                                     </database>
-                                    <!-- Rename the generated POJOs and DAOs classes -->
-                                    <!--<strategy>
-                                      <matchers>
-                                        <tables>
-                                          <table>
-                                            <pojoClass>
-                                              <expression>JOOQ_$0</expression>
-                                              <transform>PASCAL</transform>
-                                            </pojoClass>
-                                            <daoClass>
-                                              <expression>$0_Repository</expression>
-                                              <transform>PASCAL</transform>
-                                            </daoClass>
-                                          </table>
-                                        </tables>
-                                      </matchers>
-                                    </strategy>-->
                                     <target>
                                         <clean>true</clean>
-                                        <packageName>com.sivalabs.conduit.jooq.models</packageName>
+                                        <packageName>conduit.jooq.models</packageName>
                                         <directory>src/main/jooq</directory>
                                     </target>
                                 </generator>
