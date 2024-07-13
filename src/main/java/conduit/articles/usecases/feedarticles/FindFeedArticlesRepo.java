@@ -1,12 +1,15 @@
 package conduit.articles.usecases.feedarticles;
 
+import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Tags.TAGS;
 import static conduit.jooq.models.tables.UserFollower.USER_FOLLOWER;
 import static conduit.jooq.models.tables.Users.USERS;
+import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.multiset;
 import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.selectCount;
 
 import conduit.articles.usecases.shared.models.Article;
 import conduit.articles.usecases.shared.models.MultipleArticles;
@@ -47,11 +50,25 @@ class FindFeedArticlesRepo {
                         ARTICLES.CONTENT,
                         ARTICLES.DESCRIPTION,
                         ARTICLES.AUTHOR_ID,
+                        field(selectCount()
+                                        .from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE
+                                                .ARTICLE_ID
+                                                .eq(ARTICLES.ID)
+                                                .and(ARTICLE_FAVORITE.USER_ID.eq(loginUser.id())))))
+                                .as("FAVORITED"),
+                        field(selectCount().from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))))
+                                .as("FAVORITE_COUNT"),
+                        ARTICLES.CREATED_AT,
+                        ARTICLES.UPDATED_AT,
                         USERS.USERNAME,
                         USERS.BIO,
                         USERS.IMAGE,
-                        ARTICLES.CREATED_AT,
-                        ARTICLES.UPDATED_AT,
+                        field(selectCount()
+                                        .from(USER_FOLLOWER.where(USER_FOLLOWER
+                                                .FROM_ID
+                                                .eq(loginUser.id())
+                                                .and(USER_FOLLOWER.TO_ID.eq(USERS.ID)))))
+                                .as("FOLLOWING"),
                         multiset(select(TAGS.NAME)
                                         .from(TAGS)
                                         .join(ARTICLE_TAG)
@@ -66,22 +83,21 @@ class FindFeedArticlesRepo {
                 .orderBy(ARTICLES.CREATED_AT.desc())
                 .limit(filters.limit())
                 .offset(filters.offset())
-                .fetch(record -> new Article(
-                        record.get(ARTICLES.SLUG),
-                        record.get(ARTICLES.TITLE),
-                        record.get(ARTICLES.DESCRIPTION),
-                        record.get(ARTICLES.CONTENT),
-                        record.value12(),
-                        record.get(ARTICLES.CREATED_AT),
-                        record.get(ARTICLES.UPDATED_AT),
-                        false,
-                        0,
+                .fetch(r -> new Article(
+                        r.get(ARTICLES.SLUG),
+                        r.get(ARTICLES.TITLE),
+                        r.get(ARTICLES.DESCRIPTION),
+                        r.get(ARTICLES.CONTENT),
+                        r.value15(),
+                        r.get(ARTICLES.CREATED_AT),
+                        r.get(ARTICLES.UPDATED_AT),
+                        r.get("FAVORITED", Integer.class) > 0,
+                        r.get("FAVORITE_COUNT", Integer.class),
                         new Profile(
-                                record.get(USERS.USERNAME),
-                                record.get(USERS.BIO),
-                                record.get(USERS.IMAGE),
-                                // TODO; implement logic to check if loginUser follows this profile(user)
-                                false)));
+                                r.get(USERS.USERNAME),
+                                r.get(USERS.BIO),
+                                r.get(USERS.IMAGE),
+                                r.get("FOLLOWING", Integer.class) > 0)));
         return new MultipleArticles(records, articlesCount);
     }
 }

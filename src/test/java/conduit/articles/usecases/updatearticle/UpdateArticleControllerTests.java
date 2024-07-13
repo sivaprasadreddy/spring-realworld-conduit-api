@@ -45,8 +45,8 @@ class UpdateArticleControllerTests extends BaseIT {
                 .andExpect(jsonPath("$.article.updatedAt").isNotEmpty())
                 .andExpect(jsonPath("$.article.favorited").value(false))
                 .andExpect(jsonPath("$.article.favoritesCount").value(1))
-                .andExpect(jsonPath("$.article.author.username").value("siva"))
-                .andExpect(jsonPath("$.article.author.bio").value("I am a Software Architect"))
+                .andExpect(jsonPath("$.article.author.username").value("admin"))
+                .andExpect(jsonPath("$.article.author.bio").value("I am a system administrator"))
                 .andExpect(jsonPath("$.article.author.image").value("https://api.realworld.io/images/demo-avatar.png"))
                 .andExpect(jsonPath("$.article.author.following").value(false));
     }

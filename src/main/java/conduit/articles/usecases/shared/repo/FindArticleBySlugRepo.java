@@ -4,9 +4,12 @@ import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Tags.TAGS;
+import static conduit.jooq.models.tables.UserFollower.USER_FOLLOWER;
 import static conduit.jooq.models.tables.Users.USERS;
+import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.multiset;
 import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.selectCount;
 
 import conduit.articles.usecases.shared.models.Article;
 import conduit.users.usecases.shared.models.LoginUser;
@@ -24,6 +27,7 @@ public class FindArticleBySlugRepo {
     }
 
     public Optional<Article> findArticleBySlug(LoginUser loginUser, String articleSlug) {
+        Long loginUserId = loginUser != null ? loginUser.id() : -1;
         var record = dsl.select(
                         ARTICLES.ID,
                         ARTICLES.TITLE,
@@ -36,6 +40,12 @@ public class FindArticleBySlugRepo {
                         USERS.USERNAME,
                         USERS.BIO,
                         USERS.IMAGE,
+                        field(selectCount()
+                                        .from(USER_FOLLOWER.where(USER_FOLLOWER
+                                                .FROM_ID
+                                                .eq(loginUserId)
+                                                .and(USER_FOLLOWER.TO_ID.eq(USERS.ID)))))
+                                .as("FOLLOWING"),
                         multiset(select(TAGS.NAME)
                                         .from(TAGS)
                                         .join(ARTICLE_TAG)
@@ -60,12 +70,15 @@ public class FindArticleBySlugRepo {
                 record.get(ARTICLES.TITLE),
                 record.get(ARTICLES.DESCRIPTION),
                 record.get(ARTICLES.CONTENT),
-                record.value12(),
+                record.value13(),
                 record.get(ARTICLES.CREATED_AT),
                 record.get(ARTICLES.UPDATED_AT),
                 favourited,
                 favoritesCount,
-                // TODO; get 'following' value
-                new Profile(record.get(USERS.USERNAME), record.get(USERS.BIO), record.get(USERS.IMAGE), false)));
+                new Profile(
+                        record.get(USERS.USERNAME),
+                        record.get(USERS.BIO),
+                        record.get(USERS.IMAGE),
+                        record.get("FOLLOWING", Integer.class) > 0)));
     }
 }

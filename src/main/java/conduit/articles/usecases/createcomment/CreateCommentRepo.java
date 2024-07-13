@@ -1,10 +1,9 @@
 package conduit.articles.usecases.createcomment;
 
-import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Comments.COMMENTS;
 
 import conduit.articles.usecases.shared.models.Comment;
-import conduit.shared.ResourceNotFoundException;
+import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepo;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
 import org.jooq.DSLContext;
@@ -15,19 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class CreateCommentRepo {
     private final DSLContext dsl;
+    private final FindArticleIdBySlugRepo findArticleIdBySlugRepo;
 
-    CreateCommentRepo(DSLContext dsl) {
+    CreateCommentRepo(DSLContext dsl, FindArticleIdBySlugRepo findArticleIdBySlugRepo) {
         this.dsl = dsl;
+        this.findArticleIdBySlugRepo = findArticleIdBySlugRepo;
     }
 
+    @Transactional
     public Comment createComment(LoginUser loginUser, CreatedCommentCmd cmd) {
-        Long articleId = dsl.select(ARTICLES.ID)
-                .from(ARTICLES)
-                .where(ARTICLES.SLUG.eq(cmd.articleSlug()))
-                .fetchOne(ARTICLES.ID);
-        if (articleId == null) {
-            throw new ResourceNotFoundException("Article with slug '" + cmd.articleSlug() + "' does not exist");
-        }
+        Long articleId = findArticleIdBySlugRepo.getRequiredArticleIdBySlug(cmd.articleSlug());
         return dsl.insertInto(COMMENTS)
                 .set(COMMENTS.ARTICLE_ID, articleId)
                 .set(COMMENTS.AUTHOR_ID, loginUser.id())

@@ -24,10 +24,10 @@ class UpdateArticleRepo {
         ArticlesRecord record = dsl.selectFrom(ARTICLES)
                 .where(ARTICLES.SLUG.equalIgnoreCase(cmd.slug()))
                 .fetchOne();
-        String slug = cmd.slug();
         if (record == null) {
             throw new ResourceNotFoundException("Article with id '" + cmd.slug() + "' does not exist");
         }
+        String slug = cmd.slug();
         if (cmd.title() != null && !cmd.title().isEmpty()) {
             record.set(ARTICLES.TITLE, cmd.title());
             slug = StringUtils.toSlug(cmd.title());

@@ -1,11 +1,16 @@
 package conduit.articles.usecases.listarticles;
 
+import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Tags.TAGS;
+import static conduit.jooq.models.tables.UserFollower.USER_FOLLOWER;
 import static conduit.jooq.models.tables.Users.USERS;
+import static org.jooq.impl.DSL.condition;
+import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.multiset;
 import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.selectCount;
 
 import conduit.articles.usecases.shared.models.Article;
 import conduit.articles.usecases.shared.models.MultipleArticles;
@@ -28,23 +33,60 @@ class FindArticlesRepo {
     }
 
     public MultipleArticles findArticles(LoginUser loginUser, ArticlesFilterCriteria filters) {
+        Long loginUserId = loginUser != null ? loginUser.id() : -1;
         List<Condition> conditions = new ArrayList<>();
         // TODO; apply filters
+        if (filters.author() != null && !filters.author().isEmpty()) {
+            conditions.add(condition(USERS.USERNAME.eq(filters.author())));
+        }
+        if (filters.favoritedBy() != null && !filters.favoritedBy().isEmpty()) {
+            conditions.add(condition(ARTICLE_FAVORITE.USER_ID.eq(
+                    select(USERS.ID).from(USERS).where(USERS.USERNAME.eq(filters.favoritedBy())))));
+        }
 
-        var articlesCount = dsl.selectCount().from(ARTICLES).where(conditions).fetchOneInto(Integer.class);
+        if (filters.tag() != null && !filters.tag().isEmpty()) {
+            conditions.add(
+                    condition(ARTICLE_TAG.TAG_ID.eq(select(TAGS.ID).from(TAGS).where(TAGS.NAME.eq(filters.tag())))));
+        }
 
-        var records = dsl.select(
+        var articlesCount = dsl.selectCount()
+                .from(dsl.selectDistinct(ARTICLES.ID)
+                        .from(ARTICLES)
+                        .join(USERS)
+                        .on(ARTICLES.AUTHOR_ID.eq(USERS.ID))
+                        .leftJoin(ARTICLE_FAVORITE)
+                        .on(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))
+                        .leftJoin(ARTICLE_TAG)
+                        .on(ARTICLE_TAG.ARTICLE_ID.eq(ARTICLES.ID))
+                        .where(conditions))
+                .fetchOneInto(Integer.class);
+
+        var records = dsl.selectDistinct(
                         ARTICLES.ID,
                         ARTICLES.TITLE,
                         ARTICLES.SLUG,
                         ARTICLES.CONTENT,
                         ARTICLES.DESCRIPTION,
                         ARTICLES.AUTHOR_ID,
+                        field(selectCount()
+                                        .from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE
+                                                .ARTICLE_ID
+                                                .eq(ARTICLES.ID)
+                                                .and(ARTICLE_FAVORITE.USER_ID.eq(loginUserId)))))
+                                .as("FAVORITED"),
+                        field(selectCount().from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))))
+                                .as("FAVORITE_COUNT"),
+                        ARTICLES.CREATED_AT,
+                        ARTICLES.UPDATED_AT,
                         USERS.USERNAME,
                         USERS.BIO,
                         USERS.IMAGE,
-                        ARTICLES.CREATED_AT,
-                        ARTICLES.UPDATED_AT,
+                        field(selectCount()
+                                        .from(USER_FOLLOWER.where(USER_FOLLOWER
+                                                .FROM_ID
+                                                .eq(loginUserId)
+                                                .and(USER_FOLLOWER.TO_ID.eq(USERS.ID)))))
+                                .as("FOLLOWING"),
                         multiset(select(TAGS.NAME)
                                         .from(TAGS)
                                         .join(ARTICLE_TAG)
@@ -55,26 +97,29 @@ class FindArticlesRepo {
                 .from(ARTICLES)
                 .join(USERS)
                 .on(ARTICLES.AUTHOR_ID.eq(USERS.ID))
+                .leftJoin(ARTICLE_FAVORITE)
+                .on(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))
+                .leftJoin(ARTICLE_TAG)
+                .on(ARTICLE_TAG.ARTICLE_ID.eq(ARTICLES.ID))
                 .where(conditions)
                 .orderBy(ARTICLES.CREATED_AT.desc())
                 .limit(filters.limit())
                 .offset(filters.offset())
-                .fetch(record -> new Article(
-                        record.get(ARTICLES.SLUG),
-                        record.get(ARTICLES.TITLE),
-                        record.get(ARTICLES.DESCRIPTION),
-                        record.get(ARTICLES.CONTENT),
-                        record.value12(),
-                        record.get(ARTICLES.CREATED_AT),
-                        record.get(ARTICLES.UPDATED_AT),
-                        false,
-                        0,
+                .fetch(r -> new Article(
+                        r.get(ARTICLES.SLUG),
+                        r.get(ARTICLES.TITLE),
+                        r.get(ARTICLES.DESCRIPTION),
+                        r.get(ARTICLES.CONTENT),
+                        r.value15(),
+                        r.get(ARTICLES.CREATED_AT),
+                        r.get(ARTICLES.UPDATED_AT),
+                        r.get("FAVORITED", Integer.class) > 0,
+                        r.get("FAVORITE_COUNT", Integer.class),
                         new Profile(
-                                record.get(USERS.USERNAME),
-                                record.get(USERS.BIO),
-                                record.get(USERS.IMAGE),
-                                // TODO; implement logic to check if loginUser follows this profile(user)
-                                false)));
+                                r.get(USERS.USERNAME),
+                                r.get(USERS.BIO),
+                                r.get(USERS.IMAGE),
+                                r.get("FOLLOWING", Integer.class) > 0)));
 
         return new MultipleArticles(records, articlesCount);
     }

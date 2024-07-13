@@ -5,7 +5,7 @@ import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Comments.COMMENTS;
 
-import conduit.shared.ResourceNotFoundException;
+import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepo;
 import conduit.users.usecases.shared.models.LoginUser;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -15,19 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class DeleteArticleRepo {
     private final DSLContext dsl;
+    private final FindArticleIdBySlugRepo findArticleIdBySlugRepo;
 
-    DeleteArticleRepo(DSLContext dsl) {
+    DeleteArticleRepo(DSLContext dsl, FindArticleIdBySlugRepo findArticleIdBySlugRepo) {
         this.dsl = dsl;
+        this.findArticleIdBySlugRepo = findArticleIdBySlugRepo;
     }
 
     public void deleteArticle(LoginUser loginUser, String slug) {
-        Long articleId = dsl.select(ARTICLES.ID)
-                .from(ARTICLES)
-                .where(ARTICLES.SLUG.eq(slug))
-                .fetchOne(ARTICLES.ID);
-        if (articleId == null) {
-            throw new ResourceNotFoundException("Article with slug '" + slug + "' does not exist");
-        }
+        Long articleId = findArticleIdBySlugRepo.getRequiredArticleIdBySlug(slug);
         dsl.delete(ARTICLE_TAG).where(ARTICLE_TAG.ARTICLE_ID.eq(articleId)).execute();
         dsl.delete(ARTICLE_FAVORITE)
                 .where(ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId))
