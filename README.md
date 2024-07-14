@@ -5,6 +5,8 @@
 **Spring Boot RealWorld Conduit API** implements the [API Endpoints](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints) of [Conduit](https://github.com/gothinkster/realworld),
 which is a Medium.com clone.
 
+[![CI Build](https://github.com/sivaprasadreddy/spring-realworld-conduit-api/actions/workflows/maven.yml/badge.svg)](https://github.com/sivaprasadreddy/spring-realworld-conduit-api/actions/workflows/maven.yml)
+
 ## Tech Stack
 * [Java 21](https://dev.java/)
 * [Spring Boot](https://spring.io/projects/spring-boot)
@@ -85,5 +87,39 @@ such as PostgreSQL.
   password: postgres
   database: postgres
   ```
-* Application run on port 8080
+* Application run on port http://localhost:8080
 * Swagger UI: http://localhost:8080/swagger-ui/index.html
+
+## Using [Taskfile](https://taskfile.dev/) utility
+Task is a task runner that we can use to run any arbitrary commands in easier way.
+
+### Installation
+
+```shell
+$ brew install go-task
+(or)
+$ go install github.com/go-task/task/v3/cmd/task@latest
+
+#verify task version
+$ task --version
+Task version: 3.35.1
+```
+
+### Using `task` to perform various tasks:
+
+```shell
+
+# Run tests
+$ task test
+
+# Automatically format code using spotless-maven-plugin
+$ task format
+
+# Build docker image
+$ task build_image
+
+# Run application in docker container
+$ task start
+$ task stop
+$ task restart
+```

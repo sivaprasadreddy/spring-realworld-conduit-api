@@ -3,6 +3,7 @@ version: '3'
 vars:
   GOOS: "{{default OS .GOOS}}"
   MVNW: '{{if eq .GOOS "windows"}}mvnw.cmd{{else}}./mvnw{{end}}'
+  SLEEP_CMD: '{{if eq .GOOS "windows"}}timeout{{else}}sleep{{end}}'
   DC_DIR: "docker"
   DC_FILE: "{{.DC_DIR}}/docker-compose.yml"
 
@@ -22,21 +23,6 @@ tasks:
   build_image:
     cmds:
       - "{{.MVNW}} clean compile spring-boot:build-image -DskipTests"
-
-  start_infra:
-    cmds:
-      - docker compose -f "{{.DC_FILE}}" up -d
-
-  stop_infra:
-    cmds:
-      - docker compose -f "{{.DC_FILE}}" stop
-      - docker compose -f "{{.DC_FILE}}" rm -f
-
-  restart_infra:
-    cmds:
-      - task: stop_infra
-      - task: sleep
-      - task: start_infra
 
   start:
     deps: [build_image]
@@ -58,4 +44,4 @@ tasks:
     vars:
       DURATION: '{{default 5 .DURATION}}'
     cmds:
-      - sleep {{.DURATION}}
+      - "{{.SLEEP_CMD}} {{.DURATION}}"
