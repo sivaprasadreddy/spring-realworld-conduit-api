@@ -23,7 +23,7 @@ class GetArticleController {
     @GetMapping("/api/articles/{slug}")
     @Operation(summary = "Get Article by Slug", tags = "Article API Endpoints")
     SingleArticleResponse getArticle(@PathVariable String slug) {
-        LoginUser loginUser = authService.getCurrentUserOrThrow();
+        LoginUser loginUser = authService.getCurrentUser();
         var article = findArticleBySlugRepository
                 .findArticleBySlug(loginUser, slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Article not found with slug: " + slug));

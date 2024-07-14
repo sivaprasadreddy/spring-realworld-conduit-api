@@ -62,7 +62,7 @@ public class FindArticleBySlugRepository {
         var articleId = record.getValue(ARTICLES.ID);
 
         boolean favourited = dsl.fetchExists(ARTICLE_FAVORITE.where(
-                ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId).and(ARTICLE_FAVORITE.USER_ID.eq(loginUser.id()))));
+                ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId).and(ARTICLE_FAVORITE.USER_ID.eq(loginUserId))));
         int favoritesCount = dsl.fetchCount(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId)));
 
         return Optional.of(new Article(
