@@ -19,10 +19,10 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FindArticleBySlugRepo {
+public class FindArticleBySlugRepository {
     private final DSLContext dsl;
 
-    public FindArticleBySlugRepo(DSLContext dsl) {
+    public FindArticleBySlugRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

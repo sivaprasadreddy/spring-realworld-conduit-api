@@ -1,7 +1,7 @@
 package conduit.articles.usecases.createarticle;
 
 import conduit.articles.usecases.shared.models.Article;
-import conduit.articles.usecases.shared.repo.FindArticleBySlugRepo;
+import conduit.articles.usecases.shared.repo.FindArticleBySlugRepository;
 import conduit.shared.StringUtils;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
@@ -11,12 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 class CreateArticle {
-    private final CreateArticleRepo createArticleRepo;
-    private final FindArticleBySlugRepo findArticleBySlugRepo;
+    private final CreateArticleRepository createArticleRepository;
+    private final FindArticleBySlugRepository findArticleBySlugRepository;
 
-    CreateArticle(CreateArticleRepo createArticleRepo, FindArticleBySlugRepo findArticleBySlugRepo) {
-        this.createArticleRepo = createArticleRepo;
-        this.findArticleBySlugRepo = findArticleBySlugRepo;
+    CreateArticle(
+            CreateArticleRepository createArticleRepository, FindArticleBySlugRepository findArticleBySlugRepository) {
+        this.createArticleRepository = createArticleRepository;
+        this.findArticleBySlugRepository = findArticleBySlugRepository;
     }
 
     public Article execute(LoginUser loginUser, CreateArticleCmd cmd) {
@@ -32,7 +33,7 @@ class CreateArticle {
                 false,
                 0,
                 null);
-        createArticleRepo.createArticle(loginUser, article);
-        return findArticleBySlugRepo.findArticleBySlug(loginUser, slug).orElseThrow();
+        createArticleRepository.createArticle(loginUser, article);
+        return findArticleBySlugRepository.findArticleBySlug(loginUser, slug).orElseThrow();
     }
 }

@@ -1,10 +1,11 @@
 package conduit.users.usecases.followuser;
 
-import conduit.shared.ResponseWrapper;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.LoginUser;
-import conduit.users.usecases.shared.models.Profile;
-import conduit.users.usecases.shared.repo.GetProfileRepo;
+import conduit.users.usecases.shared.models.ProfileResponse;
+import conduit.users.usecases.shared.repo.GetProfileRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,20 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class FollowUserController {
     private final AuthService authService;
-    private final FollowUserRepo followUser;
-    private final GetProfileRepo getProfileRepo;
+    private final FollowUserRepository followUser;
+    private final GetProfileRepository getProfileRepository;
 
-    FollowUserController(AuthService authService, FollowUserRepo followUser, GetProfileRepo getProfileRepo) {
+    FollowUserController(
+            AuthService authService, FollowUserRepository followUser, GetProfileRepository getProfileRepository) {
         this.authService = authService;
         this.followUser = followUser;
-        this.getProfileRepo = getProfileRepo;
+        this.getProfileRepository = getProfileRepository;
     }
 
     @PostMapping("/api/profiles/{username}/follow")
-    ResponseWrapper<Profile> followUser(@PathVariable("username") String username) {
+    @Operation(summary = "Follow User", tags = "User API Endpoints")
+    @SecurityRequirement(name = "JwtToken")
+    ProfileResponse followUser(@PathVariable("username") String username) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         followUser.follow(loginUser, username);
-        var profile = getProfileRepo.findProfile(loginUser, username).orElseThrow();
-        return new ResponseWrapper<>("profile", profile);
+        var profile = getProfileRepository.findProfile(loginUser, username).orElseThrow();
+        return new ProfileResponse(profile);
     }
 }

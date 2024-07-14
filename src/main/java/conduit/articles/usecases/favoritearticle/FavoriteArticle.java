@@ -1,7 +1,7 @@
 package conduit.articles.usecases.favoritearticle;
 
 import conduit.articles.usecases.shared.models.Article;
-import conduit.articles.usecases.shared.repo.FindArticleBySlugRepo;
+import conduit.articles.usecases.shared.repo.FindArticleBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -10,16 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 class FavoriteArticle {
-    private final FavoriteArticleRepo favoriteArticleRepo;
-    private final FindArticleBySlugRepo findArticleBySlug;
+    private final FavoriteArticleRepository favoriteArticleRepository;
+    private final FindArticleBySlugRepository findArticleBySlug;
 
-    public FavoriteArticle(FavoriteArticleRepo favoriteArticleRepo, FindArticleBySlugRepo findArticleBySlug) {
-        this.favoriteArticleRepo = favoriteArticleRepo;
+    public FavoriteArticle(
+            FavoriteArticleRepository favoriteArticleRepository, FindArticleBySlugRepository findArticleBySlug) {
+        this.favoriteArticleRepository = favoriteArticleRepository;
         this.findArticleBySlug = findArticleBySlug;
     }
 
     public Optional<Article> execute(LoginUser loginUser, String slug) {
-        favoriteArticleRepo.favoriteArticle(loginUser, slug);
+        favoriteArticleRepository.favoriteArticle(loginUser, slug);
         return findArticleBySlug.findArticleBySlug(loginUser, slug);
     }
 }

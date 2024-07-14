@@ -14,10 +14,4 @@ public record Article(
         LocalDateTime updatedAt,
         boolean favorited,
         int favoritesCount,
-        Profile author) {
-
-    public Article withProfile(Profile profile) {
-        return new Article(
-                slug, title, description, body, tagList, createdAt, updatedAt, favorited, favoritesCount, profile);
-    }
-}
+        Profile author) {}

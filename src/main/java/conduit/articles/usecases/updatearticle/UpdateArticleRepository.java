@@ -13,10 +13,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class UpdateArticleRepo {
+class UpdateArticleRepository {
     private final DSLContext dsl;
 
-    UpdateArticleRepo(DSLContext dsl) {
+    UpdateArticleRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

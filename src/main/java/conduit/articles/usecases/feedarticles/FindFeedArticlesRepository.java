@@ -1,4 +1,4 @@
-package conduit.articles.usecases.listarticles;
+package conduit.articles.usecases.feedarticles;
 
 import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
@@ -6,7 +6,6 @@ import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Tags.TAGS;
 import static conduit.jooq.models.tables.UserFollower.USER_FOLLOWER;
 import static conduit.jooq.models.tables.Users.USERS;
-import static org.jooq.impl.DSL.condition;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.multiset;
 import static org.jooq.impl.DSL.select;
@@ -16,52 +15,35 @@ import conduit.articles.usecases.shared.models.Article;
 import conduit.articles.usecases.shared.models.MultipleArticles;
 import conduit.users.usecases.shared.models.LoginUser;
 import conduit.users.usecases.shared.models.Profile;
-import java.util.ArrayList;
 import java.util.List;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(readOnly = true)
-class FindArticlesRepo {
+class FindFeedArticlesRepository {
     private final DSLContext dsl;
 
-    FindArticlesRepo(DSLContext dsl) {
+    FindFeedArticlesRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
-    public MultipleArticles findArticles(LoginUser loginUser, ArticlesFilterCriteria filters) {
-        Long loginUserId = loginUser != null ? loginUser.id() : -1;
-        List<Condition> conditions = new ArrayList<>();
-        // TODO; apply filters
-        if (filters.author() != null && !filters.author().isEmpty()) {
-            conditions.add(condition(USERS.USERNAME.eq(filters.author())));
-        }
-        if (filters.favoritedBy() != null && !filters.favoritedBy().isEmpty()) {
-            conditions.add(condition(ARTICLE_FAVORITE.USER_ID.eq(
-                    select(USERS.ID).from(USERS).where(USERS.USERNAME.eq(filters.favoritedBy())))));
-        }
-
-        if (filters.tag() != null && !filters.tag().isEmpty()) {
-            conditions.add(
-                    condition(ARTICLE_TAG.TAG_ID.eq(select(TAGS.ID).from(TAGS).where(TAGS.NAME.eq(filters.tag())))));
+    public MultipleArticles findFeedArticles(LoginUser loginUser, ArticlesFeedFilterCriteria filters) {
+        List<Long> followingUserIds = dsl.select(USER_FOLLOWER.TO_ID)
+                .from(USER_FOLLOWER)
+                .where(USER_FOLLOWER.FROM_ID.eq(loginUser.id()))
+                .fetch(USER_FOLLOWER.TO_ID);
+        if (followingUserIds.isEmpty()) {
+            return new MultipleArticles(List.of(), 0);
         }
 
         var articlesCount = dsl.selectCount()
-                .from(dsl.selectDistinct(ARTICLES.ID)
-                        .from(ARTICLES)
-                        .join(USERS)
-                        .on(ARTICLES.AUTHOR_ID.eq(USERS.ID))
-                        .leftJoin(ARTICLE_FAVORITE)
-                        .on(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))
-                        .leftJoin(ARTICLE_TAG)
-                        .on(ARTICLE_TAG.ARTICLE_ID.eq(ARTICLES.ID))
-                        .where(conditions))
+                .from(ARTICLES)
+                .where(ARTICLES.AUTHOR_ID.in(followingUserIds))
                 .fetchOneInto(Integer.class);
 
-        var records = dsl.selectDistinct(
+        var records = dsl.select(
                         ARTICLES.ID,
                         ARTICLES.TITLE,
                         ARTICLES.SLUG,
@@ -72,7 +54,7 @@ class FindArticlesRepo {
                                         .from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE
                                                 .ARTICLE_ID
                                                 .eq(ARTICLES.ID)
-                                                .and(ARTICLE_FAVORITE.USER_ID.eq(loginUserId)))))
+                                                .and(ARTICLE_FAVORITE.USER_ID.eq(loginUser.id())))))
                                 .as("FAVORITED"),
                         field(selectCount().from(ARTICLE_FAVORITE.where(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))))
                                 .as("FAVORITE_COUNT"),
@@ -84,7 +66,7 @@ class FindArticlesRepo {
                         field(selectCount()
                                         .from(USER_FOLLOWER.where(USER_FOLLOWER
                                                 .FROM_ID
-                                                .eq(loginUserId)
+                                                .eq(loginUser.id())
                                                 .and(USER_FOLLOWER.TO_ID.eq(USERS.ID)))))
                                 .as("FOLLOWING"),
                         multiset(select(TAGS.NAME)
@@ -95,13 +77,9 @@ class FindArticlesRepo {
                                 .as("tagsList")
                                 .convertFrom(r -> r.getValues(TAGS.NAME)))
                 .from(ARTICLES)
-                .join(USERS)
+                .leftJoin(USERS)
                 .on(ARTICLES.AUTHOR_ID.eq(USERS.ID))
-                .leftJoin(ARTICLE_FAVORITE)
-                .on(ARTICLE_FAVORITE.ARTICLE_ID.eq(ARTICLES.ID))
-                .leftJoin(ARTICLE_TAG)
-                .on(ARTICLE_TAG.ARTICLE_ID.eq(ARTICLES.ID))
-                .where(conditions)
+                .where(ARTICLES.AUTHOR_ID.in(followingUserIds))
                 .orderBy(ARTICLES.CREATED_AT.desc())
                 .limit(filters.limit())
                 .offset(filters.offset())
@@ -120,7 +98,6 @@ class FindArticlesRepo {
                                 r.get(USERS.BIO),
                                 r.get(USERS.IMAGE),
                                 r.get("FOLLOWING", Integer.class) > 0)));
-
         return new MultipleArticles(records, articlesCount);
     }
 }

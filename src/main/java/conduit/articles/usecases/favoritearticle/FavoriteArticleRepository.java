@@ -2,24 +2,24 @@ package conduit.articles.usecases.favoritearticle;
 
 import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepo;
+import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class FavoriteArticleRepo {
+class FavoriteArticleRepository {
+    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
     private final DSLContext dsl;
-    private final FindArticleIdBySlugRepo findArticleIdBySlugRepo;
 
-    FavoriteArticleRepo(DSLContext dsl, FindArticleIdBySlugRepo findArticleIdBySlugRepo) {
+    FavoriteArticleRepository(FindArticleIdBySlugRepository findArticleIdBySlugRepository, DSLContext dsl) {
+        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
         this.dsl = dsl;
-        this.findArticleIdBySlugRepo = findArticleIdBySlugRepo;
     }
 
     public void favoriteArticle(LoginUser loginUser, String slug) {
-        Long articleId = findArticleIdBySlugRepo.getRequiredArticleIdBySlug(slug);
+        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
         dsl.insertInto(ARTICLE_FAVORITE)
                 .set(ARTICLE_FAVORITE.ARTICLE_ID, articleId)
                 .set(ARTICLE_FAVORITE.USER_ID, loginUser.id())

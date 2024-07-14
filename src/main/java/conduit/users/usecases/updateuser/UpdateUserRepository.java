@@ -10,10 +10,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class UpdateUserRepo {
+class UpdateUserRepository {
     private final DSLContext dsl;
 
-    UpdateUserRepo(DSLContext dsl) {
+    UpdateUserRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-class UnfollowUserRepo {
+class UnfollowUserRepository {
     private final DSLContext dsl;
 
-    UnfollowUserRepo(DSLContext dsl) {
+    UnfollowUserRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

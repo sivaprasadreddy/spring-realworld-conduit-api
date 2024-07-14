@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class UserRegistration {
     private final FindUserRepository findUserRepository;
-    private final UserRegistrationRepo registrationRepo;
+    private final UserRegistrationRepository registrationRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtHelper jwtHelper;
 
     public UserRegistration(
             FindUserRepository findUserRepository,
-            UserRegistrationRepo registrationRepo,
+            UserRegistrationRepository registrationRepo,
             PasswordEncoder passwordEncoder,
             JwtHelper jwtHelper) {
         this.findUserRepository = findUserRepository;

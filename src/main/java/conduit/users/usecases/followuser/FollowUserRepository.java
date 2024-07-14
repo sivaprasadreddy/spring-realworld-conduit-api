@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-class FollowUserRepo {
+class FollowUserRepository {
     private final DSLContext dsl;
 
-    FollowUserRepo(DSLContext dsl) {
+    FollowUserRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

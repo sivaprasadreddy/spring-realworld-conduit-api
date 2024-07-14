@@ -2,23 +2,23 @@ package conduit.articles.usecases.unfavoritearticle;
 
 import static conduit.jooq.models.tables.ArticleFavorite.ARTICLE_FAVORITE;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepo;
+import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class UnfavoriteArticleRepo {
+class UnfavoriteArticleRepository {
+    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
     private final DSLContext dsl;
-    private final FindArticleIdBySlugRepo findArticleIdBySlugRepo;
 
-    UnfavoriteArticleRepo(DSLContext dsl, FindArticleIdBySlugRepo findArticleIdBySlugRepo) {
+    UnfavoriteArticleRepository(FindArticleIdBySlugRepository findArticleIdBySlugRepository, DSLContext dsl) {
+        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
         this.dsl = dsl;
-        this.findArticleIdBySlugRepo = findArticleIdBySlugRepo;
     }
 
     public void unfavoriteArticle(LoginUser loginUser, String slug) {
-        Long articleId = findArticleIdBySlugRepo.getRequiredArticleIdBySlug(slug);
+        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
         dsl.deleteFrom(ARTICLE_FAVORITE)
                 .where(ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId).and(ARTICLE_FAVORITE.USER_ID.eq(loginUser.id())))
                 .execute();

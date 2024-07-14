@@ -7,7 +7,6 @@ import conduit.users.usecases.shared.models.LoginUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
@@ -41,24 +40,23 @@ public class JwtHelper {
     }
 
     public String generateToken(String email) {
-        SecretKey key = Keys.hmacShaKeyFor(properties.jwt().secret().getBytes(StandardCharsets.UTF_8));
+        String secretString = properties.jwt().secret();
+        SecretKey key = Keys.hmacShaKeyFor(secretString.getBytes(UTF_8));
         Date issuedAt = new Date();
         Date expiration = generateExpirationDate(issuedAt);
         return Jwts.builder()
-                .setIssuer(properties.jwt().issuer())
-                .setSubject(email)
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
+                .issuer(properties.jwt().issuer())
+                .subject(email)
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .signWith(key)
                 .compact();
     }
 
     private Claims parseToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(properties.jwt().secret().getBytes(UTF_8))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        String secretString = properties.jwt().secret();
+        SecretKey key = Keys.hmacShaKeyFor(secretString.getBytes(UTF_8));
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
     private Date generateExpirationDate(Date date) {

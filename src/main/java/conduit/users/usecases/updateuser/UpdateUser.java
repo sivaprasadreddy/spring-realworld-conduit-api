@@ -12,17 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class UpdateUser {
     private final FindUserRepository findUserRepository;
-    private final UpdateUserRepo updateUserRepo;
+    private final UpdateUserRepository updateUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtHelper jwtHelper;
 
     public UpdateUser(
             FindUserRepository findUserRepository,
-            UpdateUserRepo updateUserRepo,
+            UpdateUserRepository updateUserRepository,
             PasswordEncoder passwordEncoder,
             JwtHelper jwtHelper) {
         this.findUserRepository = findUserRepository;
-        this.updateUserRepo = updateUserRepo;
+        this.updateUserRepository = updateUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtHelper = jwtHelper;
     }
@@ -32,7 +32,7 @@ class UpdateUser {
             String encodedPassword = passwordEncoder.encode(cmd.password());
             cmd = new UpdateUserCmd(cmd.email(), cmd.username(), encodedPassword, cmd.bio(), cmd.image());
         }
-        var email = updateUserRepo.updateUser(loginUser, cmd);
+        var email = updateUserRepository.updateUser(loginUser, cmd);
         var user = findUserRepository.findUserByEmail(email).orElseThrow();
         var token = jwtHelper.generateToken(email);
         return UserResponse.from(user, token);

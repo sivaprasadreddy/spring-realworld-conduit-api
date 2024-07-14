@@ -1,8 +1,9 @@
 package conduit.users.usecases.getcurrentuser;
 
-import conduit.shared.ResponseWrapper;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +16,10 @@ class GetCurrentUserController {
     }
 
     @GetMapping("/api/user")
-    ResponseWrapper<UserResponse> getCurrentUser() {
+    @Operation(summary = "Get Login User", tags = "User API Endpoints")
+    @SecurityRequirement(name = "JwtToken")
+    UserResponse getCurrentUser() {
         var loginUser = authService.getCurrentUserOrThrow();
-        return new ResponseWrapper<>("user", UserResponse.from(loginUser));
+        return UserResponse.from(loginUser);
     }
 }

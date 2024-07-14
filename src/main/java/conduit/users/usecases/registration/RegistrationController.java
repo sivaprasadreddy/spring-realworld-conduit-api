@@ -1,7 +1,7 @@
 package conduit.users.usecases.registration;
 
-import conduit.shared.ResponseWrapper;
 import conduit.users.usecases.shared.models.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,10 @@ class RegistrationController {
 
     @PostMapping("/api/users")
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseWrapper<UserResponse> register(@RequestBody @Valid RegistrationCmd cmd) {
-        return new ResponseWrapper<>("user", registration.execute(cmd));
+    @Operation(summary = "Register User", tags = "User API Endpoints")
+    UserResponse register(@RequestBody @Valid RegistrationCmdPayload cmd) {
+        return registration.execute(cmd.user());
     }
+
+    record RegistrationCmdPayload(@Valid RegistrationCmd user) {}
 }

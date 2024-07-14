@@ -1,7 +1,7 @@
 package conduit.users.usecases.login;
 
-import conduit.shared.ResponseWrapper;
 import conduit.users.usecases.shared.models.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,11 @@ class LoginController {
     }
 
     @PostMapping("/api/users/login")
-    ResponseWrapper<UserResponse> login(@RequestBody @Valid LoginRequest req) {
-        log.info("Login request for email: {}", req.email());
-        var user = userLogin.execute(req.email(), req.password());
-        return new ResponseWrapper<>("user", user);
+    @Operation(summary = "Login User", tags = "User API Endpoints")
+    UserResponse login(@RequestBody @Valid LoginRequestPayload req) {
+        log.info("Login request for email: {}", req.user().email());
+        return userLogin.execute(req.user().email(), req.user().password());
     }
+
+    record LoginRequestPayload(@Valid LoginRequest user) {}
 }

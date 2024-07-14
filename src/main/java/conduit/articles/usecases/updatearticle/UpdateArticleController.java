@@ -1,10 +1,10 @@
 package conduit.articles.usecases.updatearticle;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import conduit.articles.usecases.shared.models.Article;
-import conduit.shared.ResponseWrapper;
+import conduit.articles.usecases.shared.models.SingleArticleResponse;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.LoginUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +23,18 @@ class UpdateArticleController {
     }
 
     @PutMapping("/api/articles/{slug}")
-    ResponseWrapper<Article> update(@PathVariable String slug, @RequestBody @Valid UpdateArticlePayload payload) {
+    @Operation(summary = "Update Article", tags = "Article API Endpoints")
+    @SecurityRequirement(name = "JwtToken")
+    SingleArticleResponse update(@PathVariable String slug, @RequestBody @Valid UpdateArticlePayloadWrapper payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
-        UpdateArticleCmd cmd = new UpdateArticleCmd(slug, payload.title(), payload.description(), payload.body());
+        var cmd = new UpdateArticleCmd(
+                slug, payload.article.title(), payload.article.description(), payload.article.body());
         var article = updateArticle.execute(loginUser, cmd);
-        return new ResponseWrapper<>("article", article);
+        return new SingleArticleResponse(article);
     }
 
-    @JsonRootName("article")
+    record UpdateArticlePayloadWrapper(@Valid UpdateArticlePayload article) {}
+
     record UpdateArticlePayload(
             @NotEmpty(message = "{title.required}") String title,
             @NotEmpty(message = "{description.required}") String description,

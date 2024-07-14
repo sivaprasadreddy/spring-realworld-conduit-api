@@ -12,10 +12,10 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class GetProfileRepo {
+public class GetProfileRepository {
     private final DSLContext dsl;
 
-    GetProfileRepo(DSLContext dsl) {
+    GetProfileRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 

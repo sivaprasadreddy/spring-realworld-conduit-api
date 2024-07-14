@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(readOnly = true)
-class GetTagsRepo {
+class GetTagsRepository {
     private final DSLContext dsl;
 
-    GetTagsRepo(DSLContext dsl) {
+    GetTagsRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
