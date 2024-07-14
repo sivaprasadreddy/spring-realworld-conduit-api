@@ -6,6 +6,7 @@
 which is a Medium.com clone.
 
 [![CI Build](https://github.com/sivaprasadreddy/spring-realworld-conduit-api/actions/workflows/maven.yml/badge.svg)](https://github.com/sivaprasadreddy/spring-realworld-conduit-api/actions/workflows/maven.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sivaprasadreddy_spring-realworld-conduit-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sivaprasadreddy_spring-realworld-conduit-api)
 
 ## Tech Stack
 * [Java 21](https://dev.java/)

@@ -24,9 +24,9 @@
 		<springdoc-openapi.version>2.6.0</springdoc-openapi.version>
         <spotless.version>2.43.0</spotless.version>
         <tc-jooq-codegen-plugin.version>0.0.4</tc-jooq-codegen-plugin.version>
-        <properties-maven-plugin.version>1.2.0</properties-maven-plugin.version>
+        <properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <jacoco.minimum.coverage>75%</jacoco.minimum.coverage>
         <dockerImageName>sivaprasadreddy/${project.artifactId}</dockerImageName>
 	</properties>

@@ -31,4 +31,4 @@ jobs:
 
       - if: ${{ github.ref == 'refs/heads/main' }}
         name: Sonar Scan
-        run: ./mvnw initialize sonar:sonar -Dsonar.login=${{ env.SONAR_TOKEN }}
+        run: ./mvnw initialize sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
