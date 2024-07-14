@@ -9,5 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ConduitApplicationTests extends BaseIT {
 
     @Test
-    void contextLoads() {}
+    void contextLoads() {
+        // verify whether application can be bootstrap successfully
+    }
 }

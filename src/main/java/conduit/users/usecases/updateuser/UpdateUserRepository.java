@@ -43,7 +43,6 @@ class UpdateUserRepository {
         try {
             dsl.executeUpdate(usersRecord);
         } catch (DataIntegrityViolationException e) {
-            // TODO: Check if there is any better way to find out which constraint is violated
             String message = e.getMessage();
             if (message.contains("uk_users_username")) {
                 throw new BadRequestException("Username already exists");

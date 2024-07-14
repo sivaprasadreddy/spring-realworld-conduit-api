@@ -9,9 +9,9 @@ class ModularityTests {
 
     @Test
     void verifiesModularStructure() {
-        // System.out.println("==============Modules================");
-        // System.out.println(modules);
-        // System.out.println("=====================================");
+        System.out.println("==============Modules================");
+        System.out.println(modules);
+        System.out.println("=====================================");
         modules.verify();
     }
 

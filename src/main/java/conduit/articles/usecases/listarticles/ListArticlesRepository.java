@@ -35,7 +35,7 @@ class ListArticlesRepository {
     public MultipleArticles findArticles(LoginUser loginUser, ArticlesFilterCriteria filters) {
         Long loginUserId = loginUser != null ? loginUser.id() : -1;
         List<Condition> conditions = new ArrayList<>();
-        // TODO; apply filters
+
         if (filters.author() != null && !filters.author().isEmpty()) {
             conditions.add(condition(USERS.USERNAME.eq(filters.author())));
         }

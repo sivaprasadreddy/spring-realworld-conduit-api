@@ -9,11 +9,14 @@ import conduit.shared.StringUtils;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
 import org.jooq.DSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 @Repository
 class UpdateArticleRepository {
+    private static final Logger log = LoggerFactory.getLogger(UpdateArticleRepository.class);
     private final DSLContext dsl;
 
     UpdateArticleRepository(DSLContext dsl) {
@@ -21,6 +24,7 @@ class UpdateArticleRepository {
     }
 
     public String updateArticle(LoginUser loginUser, UpdateArticleCmd cmd) {
+        log.info("Updating article with slug {} by userId:{}", cmd.slug(), loginUser.id());
         ArticlesRecord record = dsl.selectFrom(ARTICLES)
                 .where(ARTICLES.SLUG.equalIgnoreCase(cmd.slug()))
                 .fetchOne();

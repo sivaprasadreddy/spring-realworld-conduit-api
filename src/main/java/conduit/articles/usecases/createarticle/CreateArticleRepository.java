@@ -49,12 +49,7 @@ class CreateArticleRepository {
             Map<String, Tag> tagMap = findTags(article.tagList());
 
             for (String tag : article.tagList()) {
-                Long tagId = tagMap.get(tag) == null ? null : tagMap.get(tag).id();
-                if (tagId == null) {
-                    Tag newTag = createTag(tag);
-                    tagMap.put(tag, newTag);
-                    tagId = newTag.id();
-                }
+                Long tagId = tagMap.computeIfAbsent(tag, this::createTag).id();
                 dsl.insertInto(ARTICLE_TAG)
                         .set(ARTICLE_TAG.ARTICLE_ID, articleId)
                         .set(ARTICLE_TAG.TAG_ID, tagId)
