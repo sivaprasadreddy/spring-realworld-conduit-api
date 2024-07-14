@@ -16,10 +16,18 @@ class DeleteCommentControllerTests extends BaseIT {
 
     @Test
     void shouldDeleteCommentSuccessfully() throws Exception {
+        String token = jwtHelper.generateToken("john@gmail.com");
+        mockMvc.perform(delete("/api/articles/{slug}/comments/{id}", "how-to-not-to-ask-for-technical-help", 1)
+                        .header("Authorization", "Token " + token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldNotBeAbleToDeleteOthersComment() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
         mockMvc.perform(delete("/api/articles/{slug}/comments/{id}", "getting-started-with-kubernetes", 2)
                         .header("Authorization", "Token " + token))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 
     @Test

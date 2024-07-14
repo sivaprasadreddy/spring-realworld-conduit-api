@@ -19,7 +19,8 @@ class FavoriteArticleRepository {
     }
 
     public void favoriteArticle(LoginUser loginUser, String slug) {
-        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
+        Long articleId =
+                findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug).articleId();
         dsl.insertInto(ARTICLE_FAVORITE)
                 .set(ARTICLE_FAVORITE.ARTICLE_ID, articleId)
                 .set(ARTICLE_FAVORITE.USER_ID, loginUser.id())

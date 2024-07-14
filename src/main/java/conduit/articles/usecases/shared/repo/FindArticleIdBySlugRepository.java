@@ -2,6 +2,7 @@ package conduit.articles.usecases.shared.repo;
 
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 
+import conduit.articles.usecases.shared.models.ArticleAuthorPair;
 import conduit.shared.ResourceNotFoundException;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -14,14 +15,14 @@ public class FindArticleIdBySlugRepository {
         this.dsl = dsl;
     }
 
-    public Long getRequiredArticleIdBySlug(String slug) {
-        Long articleId = dsl.select(ARTICLES.ID)
+    public ArticleAuthorPair getRequiredArticleIdBySlug(String slug) {
+        ArticleAuthorPair articleAuthorPair = dsl.select(ARTICLES.ID, ARTICLES.AUTHOR_ID)
                 .from(ARTICLES)
                 .where(ARTICLES.SLUG.eq(slug))
-                .fetchOne(ARTICLES.ID);
-        if (articleId == null) {
+                .fetchOne(r -> new ArticleAuthorPair(r.get(ARTICLES.ID), r.get(ARTICLES.AUTHOR_ID)));
+        if (articleAuthorPair == null) {
             throw new ResourceNotFoundException("Article with slug '" + slug + "' does not exist");
         }
-        return articleId;
+        return articleAuthorPair;
     }
 }

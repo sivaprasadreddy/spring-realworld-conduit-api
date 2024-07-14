@@ -22,7 +22,9 @@ class CreateCommentRepository {
     }
 
     public Comment createComment(LoginUser loginUser, CreatedCommentCmd cmd) {
-        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(cmd.articleSlug());
+        Long articleId = findArticleIdBySlugRepository
+                .getRequiredArticleIdBySlug(cmd.articleSlug())
+                .articleId();
         return dsl.insertInto(COMMENTS)
                 .set(COMMENTS.ARTICLE_ID, articleId)
                 .set(COMMENTS.AUTHOR_ID, loginUser.id())

@@ -18,7 +18,8 @@ class UnfavoriteArticleRepository {
     }
 
     public void unfavoriteArticle(LoginUser loginUser, String slug) {
-        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
+        Long articleId =
+                findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug).articleId();
         dsl.deleteFrom(ARTICLE_FAVORITE)
                 .where(ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId).and(ARTICLE_FAVORITE.USER_ID.eq(loginUser.id())))
                 .execute();

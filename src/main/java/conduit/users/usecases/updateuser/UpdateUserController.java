@@ -1,6 +1,7 @@
 package conduit.users.usecases.updateuser;
 
 import conduit.users.AuthService;
+import conduit.users.usecases.shared.models.LoginUser;
 import conduit.users.usecases.shared.models.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,7 +24,8 @@ class UpdateUserController {
     @Operation(summary = "Update Login User Details", tags = "User API Endpoints")
     @SecurityRequirement(name = "JwtToken")
     UserResponse update(@RequestBody @Valid UpdateUserPayload payload) {
-        return updateUser.execute(authService.getCurrentUserOrThrow(), payload.user());
+        LoginUser loginUser = authService.getCurrentUserOrThrow();
+        return updateUser.execute(loginUser, payload.user());
     }
 
     record UpdateUserPayload(@Valid UpdateUserCmd user) {}

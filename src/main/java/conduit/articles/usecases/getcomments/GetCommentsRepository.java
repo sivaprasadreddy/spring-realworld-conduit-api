@@ -24,7 +24,8 @@ class GetCommentsRepository {
     }
 
     public MultipleComments getComments(LoginUser loginUser, String slug) {
-        Long articleId = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
+        var articleId =
+                findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug).articleId();
         Long loginUserId = loginUser != null ? loginUser.id() : -1;
         var comments = dsl.select(
                         COMMENTS.ID,

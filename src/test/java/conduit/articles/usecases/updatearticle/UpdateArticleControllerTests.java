@@ -19,7 +19,7 @@ class UpdateArticleControllerTests extends BaseIT {
 
     @Test
     void shouldUpdateArticleSuccessfully() throws Exception {
-        String token = jwtHelper.generateToken("siva@gmail.com");
+        String token = jwtHelper.generateToken("admin@gmail.com");
         mockMvc.perform(
                         put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
                                 .header("Authorization", "Token " + token)
@@ -49,5 +49,25 @@ class UpdateArticleControllerTests extends BaseIT {
                 .andExpect(jsonPath("$.article.author.bio").value("I am a system administrator"))
                 .andExpect(jsonPath("$.article.author.image").value("https://api.realworld.io/images/demo-avatar.png"))
                 .andExpect(jsonPath("$.article.author.following").value(false));
+    }
+
+    @Test
+    void shouldNotBeAbleToUpdateOthersArticle() throws Exception {
+        String token = jwtHelper.generateToken("siva@gmail.com");
+        mockMvc.perform(
+                        put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
+                                .header("Authorization", "Token " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                            {
+                              "article": {
+                                "title": "REST APIs testing using Postman and Newman",
+                                "description": "Learn how to test REST APIs using Postman and Newman",
+                                "body": "Learn how to test REST APIs using Postman and Newman"
+                              }
+                            }
+                          """))
+                .andExpect(status().isForbidden());
     }
 }

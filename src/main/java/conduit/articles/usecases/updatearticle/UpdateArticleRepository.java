@@ -8,10 +8,12 @@ import conduit.shared.ResourceNotFoundException;
 import conduit.shared.StringUtils;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,6 +32,9 @@ class UpdateArticleRepository {
                 .fetchOne();
         if (record == null) {
             throw new ResourceNotFoundException("Article with id '" + cmd.slug() + "' does not exist");
+        }
+        if (!Objects.equals(record.getAuthorId(), loginUser.id())) {
+            throw new AccessDeniedException("Access Denied");
         }
         String slug = cmd.slug();
         if (cmd.title() != null && !cmd.title().isEmpty()) {
