@@ -16,8 +16,8 @@ class GetCurrentUserController {
     }
 
     @GetMapping("/api/user")
-    @Operation(summary = "Get Login User", tags = "User API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Get current user", tags = "User and Authentication")
+    @SecurityRequirement(name = "Token")
     UserResponse getCurrentUser() {
         var loginUser = authService.getCurrentUserOrThrow();
         return UserResponse.from(loginUser);

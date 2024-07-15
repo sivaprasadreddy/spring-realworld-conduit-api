@@ -25,8 +25,8 @@ class DeleteCommentController {
     }
 
     @DeleteMapping("/api/articles/{slug}/comments/{commentId}")
-    @Operation(summary = "Delete Comment", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Delete Comment", tags = "Comments")
+    @SecurityRequirement(name = "Token")
     void delete(@PathVariable String slug, @PathVariable Long commentId) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var articleId = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug).articleId();

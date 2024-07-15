@@ -27,8 +27,8 @@ class DeleteArticleController {
     }
 
     @DeleteMapping("/api/articles/{slug}")
-    @Operation(summary = "Delete Article", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Delete Article", tags = "Articles")
+    @SecurityRequirement(name = "Token")
     void delete(@PathVariable String slug) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var articleAuthor = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug);

@@ -21,7 +21,7 @@ class GetArticleController {
     }
 
     @GetMapping("/api/articles/{slug}")
-    @Operation(summary = "Get Article by Slug", tags = "Article API Endpoints")
+    @Operation(summary = "Get Article by Slug", tags = "Articles")
     SingleArticleResponse getArticle(@PathVariable String slug) {
         LoginUser loginUser = authService.getCurrentUser();
         var article = findArticleBySlugRepository

@@ -21,8 +21,8 @@ class UpdateUserController {
     }
 
     @PutMapping("/api/user")
-    @Operation(summary = "Update Login User Details", tags = "User API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Update current user", tags = "User and Authentication")
+    @SecurityRequirement(name = "Token")
     UserResponse update(@RequestBody @Valid UpdateUserPayload payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         return updateUser.execute(loginUser, payload.user());

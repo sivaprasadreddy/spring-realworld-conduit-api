@@ -36,8 +36,8 @@ class CreateCommentController {
 
     @PostMapping("/api/articles/{slug}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create Comment", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Create Comment", tags = "Comments")
+    @SecurityRequirement(name = "Token")
     CreatedCommentResponse createComment(
             @PathVariable("slug") String slug, @RequestBody @Valid CreatedCommentPayloadWrapper payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();

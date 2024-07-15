@@ -19,7 +19,7 @@ class ListArticlesController {
     }
 
     @GetMapping("/api/articles")
-    @Operation(summary = "List Articles", tags = "Article API Endpoints")
+    @Operation(summary = "List Articles", tags = "Articles")
     MultipleArticles listArticles(
             @RequestParam(name = "tag", required = false) String tag,
             @RequestParam(name = "author", required = false) String author,

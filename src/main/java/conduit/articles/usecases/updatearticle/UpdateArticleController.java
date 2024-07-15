@@ -23,8 +23,8 @@ class UpdateArticleController {
     }
 
     @PutMapping("/api/articles/{slug}")
-    @Operation(summary = "Update Article", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Update Article", tags = "Articles")
+    @SecurityRequirement(name = "Token")
     SingleArticleResponse update(@PathVariable String slug, @RequestBody @Valid UpdateArticlePayloadWrapper payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var cmd = new UpdateArticleCmd(

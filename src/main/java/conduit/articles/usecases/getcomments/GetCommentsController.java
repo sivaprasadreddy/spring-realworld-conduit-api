@@ -23,7 +23,7 @@ class GetCommentsController {
     }
 
     @GetMapping("/api/articles/{slug}/comments")
-    @Operation(summary = "Get Comments of an Article", tags = "Article API Endpoints")
+    @Operation(summary = "Get Comments of an Article", tags = "Comments")
     MultipleComments getComments(@PathVariable String slug) {
         var loginUser = authService.getCurrentUser();
         var articleId = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug).articleId();

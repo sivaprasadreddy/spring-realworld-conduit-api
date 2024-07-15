@@ -23,7 +23,7 @@ class GetProfileController {
     }
 
     @GetMapping("/api/profiles/{username}")
-    @Operation(summary = "Get User Profile", tags = "User API Endpoints")
+    @Operation(summary = "Get User Profile", tags = "Profile")
     ResponseEntity<ProfileResponse> getProfile(@PathVariable String username) {
         Optional<Profile> optionalProfile = getProfile.findProfile(authService.getCurrentUser(), username);
         return optionalProfile

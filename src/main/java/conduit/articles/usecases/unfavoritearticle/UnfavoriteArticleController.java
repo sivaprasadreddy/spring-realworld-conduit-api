@@ -20,8 +20,8 @@ class UnfavoriteArticleController {
     }
 
     @DeleteMapping("/api/articles/{slug}/favorite")
-    @Operation(summary = "Unfavourite Article", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Unfavourite Article", tags = "Favorites")
+    @SecurityRequirement(name = "Token")
     SingleArticleResponse unfavoriteArticle(@PathVariable String slug) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var article = unfavoriteArticle.execute(loginUser, slug).orElseThrow();

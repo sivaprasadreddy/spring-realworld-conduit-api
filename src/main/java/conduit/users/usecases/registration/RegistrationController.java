@@ -19,7 +19,7 @@ class RegistrationController {
 
     @PostMapping("/api/users")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Register User", tags = "User API Endpoints")
+    @Operation(summary = "Register User", tags = "User and Authentication")
     UserResponse register(@RequestBody @Valid RegistrationCmdPayload cmd) {
         return registration.execute(cmd.user());
     }

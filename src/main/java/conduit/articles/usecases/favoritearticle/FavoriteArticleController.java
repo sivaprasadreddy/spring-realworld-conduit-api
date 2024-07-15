@@ -23,8 +23,8 @@ class FavoriteArticleController {
 
     @PostMapping("/api/articles/{slug}/favorite")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Favourite Article", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Favourite Article", tags = "Favorites")
+    @SecurityRequirement(name = "Token")
     SingleArticleResponse favoriteArticle(@PathVariable String slug) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var article = favoriteArticle.execute(loginUser, slug).orElseThrow();

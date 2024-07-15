@@ -20,8 +20,8 @@ class FeedArticlesController {
     }
 
     @GetMapping("/api/articles/feed")
-    @Operation(summary = "Get Login User Articles Feed", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Get Login User Articles Feed", tags = "Articles")
+    @SecurityRequirement(name = "Token")
     MultipleArticles getArticlesFeed(
             @RequestParam(name = "limit", defaultValue = "20") Integer limit,
             @RequestParam(name = "offset", defaultValue = "0") Integer offset) {

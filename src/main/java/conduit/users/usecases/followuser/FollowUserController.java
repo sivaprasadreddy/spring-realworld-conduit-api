@@ -24,8 +24,8 @@ class FollowUserController {
     }
 
     @PostMapping("/api/profiles/{username}/follow")
-    @Operation(summary = "Follow User", tags = "User API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Follow User", tags = "Profile")
+    @SecurityRequirement(name = "Token")
     ProfileResponse followUser(@PathVariable("username") String username) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         followUser.follow(loginUser, username);

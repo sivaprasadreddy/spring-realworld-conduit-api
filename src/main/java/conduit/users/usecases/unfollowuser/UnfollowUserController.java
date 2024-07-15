@@ -24,8 +24,8 @@ class UnfollowUserController {
     }
 
     @DeleteMapping("/api/profiles/{username}/follow")
-    @Operation(summary = "Unfollow User", tags = "User API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Unfollow User", tags = "Profile")
+    @SecurityRequirement(name = "Token")
     ProfileResponse unfollowUser(@PathVariable("username") String username) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         unfollowUser.unfollow(loginUser, username);

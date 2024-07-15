@@ -24,8 +24,8 @@ class CreateArticleController {
 
     @PostMapping("/api/articles")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create Article", tags = "Article API Endpoints")
-    @SecurityRequirement(name = "JwtToken")
+    @Operation(summary = "Create Article", tags = "Articles")
+    @SecurityRequirement(name = "Token")
     SingleArticleResponse create(@RequestBody @Valid CreateArticleCmdPayload payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
         var article = createArticle.execute(loginUser, payload.article());

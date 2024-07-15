@@ -13,7 +13,7 @@ class GetTagsController {
     }
 
     @GetMapping("/api/tags")
-    @Operation(summary = "Get all Tags", tags = "Article API Endpoints")
+    @Operation(summary = "Get all Tags", tags = "Tags")
     Tags getTags() {
         return new Tags(getTagsRepository.findAllTags());
     }

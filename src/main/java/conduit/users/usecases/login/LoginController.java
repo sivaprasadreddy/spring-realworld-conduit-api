@@ -19,7 +19,7 @@ class LoginController {
     }
 
     @PostMapping("/api/users/login")
-    @Operation(summary = "Login User", tags = "User API Endpoints")
+    @Operation(summary = "Existing user login", tags = "User and Authentication")
     UserResponse login(@RequestBody @Valid LoginRequestPayload req) {
         log.info("Login request for email: {}", req.user().email());
         return userLogin.execute(req.user().email(), req.user().password());
