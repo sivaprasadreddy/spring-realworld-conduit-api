@@ -1,6 +1,6 @@
 package conduit.articles.usecases.deletecomment;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
+import conduit.articles.usecases.shared.repo.FindArticleBySlugRepository;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.LoginUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 class DeleteCommentController {
     private final AuthService authService;
     private final DeleteCommentRepository deleteComment;
-    private final FindArticleIdBySlugRepository findArticleIdBySlug;
+    private final FindArticleBySlugRepository findArticleBySlug;
 
     DeleteCommentController(
             DeleteCommentRepository deleteComment,
             AuthService authService,
-            FindArticleIdBySlugRepository findArticleIdBySlug) {
+            FindArticleBySlugRepository findArticleBySlug) {
         this.deleteComment = deleteComment;
         this.authService = authService;
-        this.findArticleIdBySlug = findArticleIdBySlug;
+        this.findArticleBySlug = findArticleBySlug;
     }
 
     @DeleteMapping("/api/articles/{slug}/comments/{commentId}")
@@ -29,7 +29,7 @@ class DeleteCommentController {
     @SecurityRequirement(name = "JwtToken")
     void delete(@PathVariable String slug, @PathVariable Long commentId) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
-        var articleId = findArticleIdBySlug.getRequiredArticleIdBySlug(slug).articleId();
+        var articleId = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug).articleId();
         deleteComment.deleteComment(loginUser, articleId, commentId);
     }
 }

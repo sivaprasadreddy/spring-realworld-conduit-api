@@ -1,7 +1,7 @@
 package conduit.articles.usecases.createcomment;
 
 import conduit.articles.usecases.shared.models.Comment;
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
+import conduit.articles.usecases.shared.repo.FindArticleBySlugRepository;
 import conduit.users.AuthService;
 import conduit.users.UserService;
 import conduit.users.usecases.shared.models.LoginUser;
@@ -21,17 +21,17 @@ class CreateCommentController {
     private final AuthService authService;
     private final UserService userService;
     private final CreateCommentRepository createComment;
-    private final FindArticleIdBySlugRepository findArticleIdBySlug;
+    private final FindArticleBySlugRepository findArticleBySlug;
 
     CreateCommentController(
             AuthService authService,
             UserService userService,
             CreateCommentRepository createComment,
-            FindArticleIdBySlugRepository findArticleIdBySlug) {
+            FindArticleBySlugRepository findArticleBySlug) {
         this.authService = authService;
         this.userService = userService;
         this.createComment = createComment;
-        this.findArticleIdBySlug = findArticleIdBySlug;
+        this.findArticleBySlug = findArticleBySlug;
     }
 
     @PostMapping("/api/articles/{slug}/comments")
@@ -41,7 +41,7 @@ class CreateCommentController {
     CreatedCommentResponse createComment(
             @PathVariable("slug") String slug, @RequestBody @Valid CreatedCommentPayloadWrapper payload) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
-        Long articleId = findArticleIdBySlug.getRequiredArticleIdBySlug(slug).articleId();
+        Long articleId = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug).articleId();
         var comment =
                 createComment.createComment(loginUser, articleId, new CreatedCommentCmd(slug, payload.comment.body()));
         var profile = userService.getProfile(loginUser, loginUser.username());

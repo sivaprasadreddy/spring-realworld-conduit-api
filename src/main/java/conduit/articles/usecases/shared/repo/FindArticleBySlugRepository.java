@@ -12,6 +12,8 @@ import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.selectCount;
 
 import conduit.articles.usecases.shared.models.Article;
+import conduit.articles.usecases.shared.models.ArticleMetadata;
+import conduit.shared.ResourceNotFoundException;
 import conduit.users.usecases.shared.models.LoginUser;
 import conduit.users.usecases.shared.models.Profile;
 import java.util.Optional;
@@ -24,6 +26,17 @@ public class FindArticleBySlugRepository {
 
     public FindArticleBySlugRepository(DSLContext dsl) {
         this.dsl = dsl;
+    }
+
+    public ArticleMetadata getArticleMetadataBySlugOrThrow(String slug) {
+        ArticleMetadata articleMetadata = dsl.select(ARTICLES.ID, ARTICLES.AUTHOR_ID)
+                .from(ARTICLES)
+                .where(ARTICLES.SLUG.eq(slug))
+                .fetchOne(r -> new ArticleMetadata(r.get(ARTICLES.ID), r.get(ARTICLES.AUTHOR_ID)));
+        if (articleMetadata == null) {
+            throw new ResourceNotFoundException("Article with slug '" + slug + "' does not exist");
+        }
+        return articleMetadata;
     }
 
     public Optional<Article> findArticleBySlug(LoginUser loginUser, String articleSlug) {

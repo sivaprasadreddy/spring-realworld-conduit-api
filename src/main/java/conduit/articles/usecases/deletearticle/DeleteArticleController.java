@@ -1,6 +1,6 @@
 package conduit.articles.usecases.deletearticle;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
+import conduit.articles.usecases.shared.repo.FindArticleBySlugRepository;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.LoginUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 class DeleteArticleController {
     private final AuthService authService;
     private final DeleteArticleRepository deleteArticle;
-    private final FindArticleIdBySlugRepository findArticleIdBySlug;
+    private final FindArticleBySlugRepository findArticleBySlug;
 
     DeleteArticleController(
             AuthService authService,
             DeleteArticleRepository deleteArticle,
-            FindArticleIdBySlugRepository findArticleIdBySlug) {
+            FindArticleBySlugRepository findArticleBySlug) {
         this.authService = authService;
         this.deleteArticle = deleteArticle;
-        this.findArticleIdBySlug = findArticleIdBySlug;
+        this.findArticleBySlug = findArticleBySlug;
     }
 
     @DeleteMapping("/api/articles/{slug}")
@@ -31,7 +31,7 @@ class DeleteArticleController {
     @SecurityRequirement(name = "JwtToken")
     void delete(@PathVariable String slug) {
         LoginUser loginUser = authService.getCurrentUserOrThrow();
-        var articleAuthor = findArticleIdBySlug.getRequiredArticleIdBySlug(slug);
+        var articleAuthor = findArticleBySlug.getArticleMetadataBySlugOrThrow(slug);
         Long articleId = articleAuthor.articleId();
         if (!Objects.equals(articleAuthor.authorId(), loginUser.id())) {
             throw new AccessDeniedException("Access Denied");
