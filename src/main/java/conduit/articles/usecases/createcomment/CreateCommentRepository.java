@@ -3,7 +3,6 @@ package conduit.articles.usecases.createcomment;
 import static conduit.jooq.models.tables.Comments.COMMENTS;
 
 import conduit.articles.usecases.shared.models.Comment;
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.time.LocalDateTime;
 import org.jooq.DSLContext;
@@ -14,17 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class CreateCommentRepository {
     private final DSLContext dsl;
-    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
 
-    CreateCommentRepository(DSLContext dsl, FindArticleIdBySlugRepository findArticleIdBySlugRepository) {
+    CreateCommentRepository(DSLContext dsl) {
         this.dsl = dsl;
-        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
     }
 
-    public Comment createComment(LoginUser loginUser, CreatedCommentCmd cmd) {
-        Long articleId = findArticleIdBySlugRepository
-                .getRequiredArticleIdBySlug(cmd.articleSlug())
-                .articleId();
+    public Comment createComment(LoginUser loginUser, Long articleId, CreatedCommentCmd cmd) {
+
         return dsl.insertInto(COMMENTS)
                 .set(COMMENTS.ARTICLE_ID, articleId)
                 .set(COMMENTS.AUTHOR_ID, loginUser.id())

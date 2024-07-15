@@ -2,7 +2,6 @@ package conduit.articles.usecases.deletecomment;
 
 import static conduit.jooq.models.tables.Comments.COMMENTS;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.shared.ResourceNotFoundException;
 import conduit.users.usecases.shared.models.LoginUser;
 import java.util.Objects;
@@ -18,18 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 class DeleteCommentRepository {
     private static final Logger log = LoggerFactory.getLogger(DeleteCommentRepository.class);
 
-    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
     private final DSLContext dsl;
 
-    DeleteCommentRepository(FindArticleIdBySlugRepository findArticleIdBySlugRepository, DSLContext dsl) {
-        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
+    DeleteCommentRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
-    public void deleteComment(LoginUser loginUser, String slug, Long commentId) {
+    public void deleteComment(LoginUser loginUser, Long articleId, Long commentId) {
         log.info("Deleting comment with id {} by userId:{}", commentId, loginUser.id());
-        var articleId =
-                findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug).articleId();
         var record = dsl.select(COMMENTS.ID, COMMENTS.AUTHOR_ID)
                 .from(COMMENTS)
                 .where(COMMENTS.ID.eq(commentId))

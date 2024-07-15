@@ -5,13 +5,10 @@ import static conduit.jooq.models.tables.ArticleTag.ARTICLE_TAG;
 import static conduit.jooq.models.tables.Articles.ARTICLES;
 import static conduit.jooq.models.tables.Comments.COMMENTS;
 
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
-import java.util.Objects;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,21 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class DeleteArticleRepository {
     private static final Logger log = LoggerFactory.getLogger(DeleteArticleRepository.class);
-    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
     private final DSLContext dsl;
 
-    DeleteArticleRepository(FindArticleIdBySlugRepository findArticleIdBySlugRepository, DSLContext dsl) {
-        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
+    DeleteArticleRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
-    public void deleteArticle(LoginUser loginUser, String slug) {
-        log.info("Deleting article with slug {} by userId:{}", slug, loginUser.id());
-        var articleAuthor = findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug);
-        Long articleId = articleAuthor.articleId();
-        if (!Objects.equals(articleAuthor.authorId(), loginUser.id())) {
-            throw new AccessDeniedException("Access Denied");
-        }
+    public void deleteArticle(LoginUser loginUser, Long articleId) {
+        log.info("Deleting article with articleId {} by userId:{}", articleId, loginUser.id());
         dsl.delete(ARTICLE_TAG).where(ARTICLE_TAG.ARTICLE_ID.eq(articleId)).execute();
         dsl.delete(ARTICLE_FAVORITE)
                 .where(ARTICLE_FAVORITE.ARTICLE_ID.eq(articleId))

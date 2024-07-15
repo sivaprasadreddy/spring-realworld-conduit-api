@@ -7,7 +7,6 @@ import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.selectCount;
 
 import conduit.articles.usecases.shared.models.Comment;
-import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.usecases.shared.models.LoginUser;
 import conduit.users.usecases.shared.models.Profile;
 import org.jooq.DSLContext;
@@ -16,16 +15,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 class GetCommentsRepository {
     private final DSLContext dsl;
-    private final FindArticleIdBySlugRepository findArticleIdBySlugRepository;
 
-    GetCommentsRepository(DSLContext dsl, FindArticleIdBySlugRepository findArticleIdBySlugRepository) {
+    GetCommentsRepository(DSLContext dsl) {
         this.dsl = dsl;
-        this.findArticleIdBySlugRepository = findArticleIdBySlugRepository;
     }
 
-    public MultipleComments getComments(LoginUser loginUser, String slug) {
-        var articleId =
-                findArticleIdBySlugRepository.getRequiredArticleIdBySlug(slug).articleId();
+    public MultipleComments getComments(LoginUser loginUser, Long articleId) {
         Long loginUserId = loginUser != null ? loginUser.id() : -1;
         var comments = dsl.select(
                         COMMENTS.ID,

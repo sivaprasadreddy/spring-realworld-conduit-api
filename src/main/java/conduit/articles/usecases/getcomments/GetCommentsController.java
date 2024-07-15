@@ -1,5 +1,6 @@
 package conduit.articles.usecases.getcomments;
 
+import conduit.articles.usecases.shared.repo.FindArticleIdBySlugRepository;
 import conduit.users.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,16 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 class GetCommentsController {
     private final AuthService authService;
     private final GetCommentsRepository getCommentsRepository;
+    private final FindArticleIdBySlugRepository findArticleIdBySlug;
 
-    GetCommentsController(AuthService authService, GetCommentsRepository getCommentsRepository) {
+    GetCommentsController(
+            AuthService authService,
+            GetCommentsRepository getCommentsRepository,
+            FindArticleIdBySlugRepository findArticleIdBySlug) {
         this.authService = authService;
         this.getCommentsRepository = getCommentsRepository;
+        this.findArticleIdBySlug = findArticleIdBySlug;
     }
 
     @GetMapping("/api/articles/{slug}/comments")
     @Operation(summary = "Get Comments of an Article", tags = "Article API Endpoints")
     MultipleComments getComments(@PathVariable String slug) {
         var loginUser = authService.getCurrentUser();
-        return getCommentsRepository.getComments(loginUser, slug);
+        var articleId = findArticleIdBySlug.getRequiredArticleIdBySlug(slug).articleId();
+
+        return getCommentsRepository.getComments(loginUser, articleId);
     }
 }

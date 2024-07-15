@@ -1,5 +1,6 @@
 package conduit.users.usecases.getprofile;
 
+import conduit.shared.ResourceNotFoundException;
 import conduit.users.AuthService;
 import conduit.users.usecases.shared.models.Profile;
 import conduit.users.usecases.shared.models.ProfileResponse;
@@ -27,6 +28,6 @@ class GetProfileController {
         Optional<Profile> optionalProfile = getProfile.findProfile(authService.getCurrentUser(), username);
         return optionalProfile
                 .map(p -> ResponseEntity.ok(new ProfileResponse(p)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Profile with username " + username + " not found"));
     }
 }
