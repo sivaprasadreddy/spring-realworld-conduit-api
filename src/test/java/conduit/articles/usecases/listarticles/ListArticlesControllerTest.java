@@ -24,5 +24,11 @@ class ListArticlesControllerTest extends BaseIT {
                 .andExpect(jsonPath("$.articlesCount").value(14));
     }
 
-    // Add more tests with filters
+    @Test
+    void shouldGetArticlesListWithFiltersAsGuest() throws Exception {
+        mockMvc.perform(get("/api/articles?limit=10&author=admin&tag=spring-boot"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.articles.size()").value(3))
+                .andExpect(jsonPath("$.articlesCount").value(3));
+    }
 }

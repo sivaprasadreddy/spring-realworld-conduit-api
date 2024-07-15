@@ -9,6 +9,8 @@ import conduit.BaseIT;
 import conduit.articles.ArticleModuleTest;
 import conduit.users.usecases.shared.JwtHelper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -69,5 +71,49 @@ class UpdateArticleControllerTests extends BaseIT {
                             }
                           """))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldThrowNotFoundWhenSlugNotExists() throws Exception {
+        String token = jwtHelper.generateToken("admin@gmail.com");
+        mockMvc.perform(
+                        put("/api/articles/{slug}", "non-existing-slug")
+                                .header("Authorization", "Token " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                            {
+                              "article": {
+                                "title": "REST APIs testing using Postman and Newman",
+                                "description": "Learn how to test REST APIs using Postman and Newman",
+                                "body": "Learn how to test REST APIs using Postman and Newman"
+                              }
+                            }
+                          """))
+                .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Testing SpringBoot Applications",
+        "One Stop-Guide to Mapping with MapStruct",
+    })
+    void shouldReturnUnprocessableEntityWhenDataConflictExists(String title) throws Exception {
+        String token = jwtHelper.generateToken("admin@gmail.com");
+        mockMvc.perform(put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                            {
+                              "article": {
+                                "title": "%s",
+                                "description": "Learn how to test REST APIs using Postman and Newman",
+                                "body": "Learn how to test REST APIs using Postman and Newman"
+                              }
+                            }
+                          """
+                                        .formatted(title)))
+                .andExpect(status().isUnprocessableEntity());
     }
 }

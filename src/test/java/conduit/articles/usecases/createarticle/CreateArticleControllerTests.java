@@ -10,6 +10,8 @@ import conduit.BaseIT;
 import conduit.articles.ArticleModuleTest;
 import conduit.users.usecases.shared.JwtHelper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -50,5 +52,29 @@ class CreateArticleControllerTests extends BaseIT {
                 .andExpect(jsonPath("$.article.author.bio").value("I am a Software Architect"))
                 .andExpect(jsonPath("$.article.author.image").value("https://api.realworld.io/images/demo-avatar.png"))
                 .andExpect(jsonPath("$.article.author.following").value(false));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Testing SpringBoot Applications",
+        "One Stop-Guide to Mapping with MapStruct",
+    })
+    void shouldReturnUnprocessableEntityWhenDataConflictExists(String title) throws Exception {
+        String token = jwtHelper.generateToken("admin@gmail.com");
+        mockMvc.perform(post("/api/articles")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                            {
+                              "article": {
+                                "title": "%s",
+                                "description": "some description",
+                                "body": "body"
+                              }
+                            }
+                          """
+                                        .formatted(title)))
+                .andExpect(status().isUnprocessableEntity());
     }
 }

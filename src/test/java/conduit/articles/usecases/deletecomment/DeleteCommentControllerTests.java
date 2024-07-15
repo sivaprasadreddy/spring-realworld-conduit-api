@@ -43,4 +43,12 @@ class DeleteCommentControllerTests extends BaseIT {
                         .header("Authorization", "Token " + token))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void shouldGetNotFoundForNonExistingCommentId() throws Exception {
+        String token = jwtHelper.generateToken("siva@gmail.com");
+        mockMvc.perform(delete("/api/articles/{slug}/comments/{id}", "getting-started-with-kubernetes", 9999)
+                        .header("Authorization", "Token " + token))
+                .andExpect(status().isNotFound());
+    }
 }

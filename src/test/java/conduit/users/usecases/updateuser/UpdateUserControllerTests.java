@@ -29,15 +29,18 @@ class UpdateUserControllerTests extends BaseIT {
                                 {
                                     "user": {
                                         "username": "sivanew",
-                                        "password": "secret"
+                                        "email": "sivanew@gmail.com",
+                                        "password": "secret",
+                                        "bio": "new-bio",
+                                        "image": "https://api.realworld.io/images/demo-avatar.jpg"
                                     }
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.email").value("siva@gmail.com"))
+                .andExpect(jsonPath("$.user.email").value("sivanew@gmail.com"))
                 .andExpect(jsonPath("$.user.token").isNotEmpty())
                 .andExpect(jsonPath("$.user.username").value("sivanew"))
-                .andExpect(jsonPath("$.user.bio").value("I am a Software Architect"))
-                .andExpect(jsonPath("$.user.image").value("https://api.realworld.io/images/demo-avatar.png"));
+                .andExpect(jsonPath("$.user.bio").value("new-bio"))
+                .andExpect(jsonPath("$.user.image").value("https://api.realworld.io/images/demo-avatar.jpg"));
     }
 }
