@@ -17,7 +17,7 @@ class ListArticlesControllerTest extends BaseIT {
     JwtHelper jwtHelper;
 
     @Test
-    void shouldGetArticlesListSuccessfullyAsGuest() throws Exception {
+    void shouldGetArticlesListSuccessfully() throws Exception {
         mockMvc.perform(get("/api/articles?limit=10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.articles.size()").value(10))
@@ -25,8 +25,16 @@ class ListArticlesControllerTest extends BaseIT {
     }
 
     @Test
-    void shouldGetArticlesListWithFiltersAsGuest() throws Exception {
+    void shouldGetArticlesListWithFilters() throws Exception {
         mockMvc.perform(get("/api/articles?limit=10&author=admin&tag=spring-boot"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.articles.size()").value(3))
+                .andExpect(jsonPath("$.articlesCount").value(3));
+    }
+
+    @Test
+    void shouldGetArticlesListWithFavouriteFilter() throws Exception {
+        mockMvc.perform(get("/api/articles?favorited=prasad"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.articles.size()").value(3))
                 .andExpect(jsonPath("$.articlesCount").value(3));
