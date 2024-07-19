@@ -1,6 +1,7 @@
 package conduit.users.usecases.shared.repo;
 
 import static conduit.jooq.models.tables.Users.USERS;
+import static org.jooq.Records.mapping;
 
 import conduit.users.usecases.shared.models.User;
 import java.util.Optional;
@@ -16,15 +17,10 @@ public class FindUserRepository {
     }
 
     public Optional<User> findUserByEmail(String email) {
-        return dsl.selectFrom(USERS)
+        return dsl.select(USERS.ID, USERS.EMAIL, USERS.PASSWORD, USERS.USERNAME, USERS.BIO, USERS.IMAGE)
+                .from(USERS)
                 .where(USERS.EMAIL.eq(email))
-                .fetchOptional(user -> new User(
-                        user.getId(),
-                        user.getEmail(),
-                        user.getPassword(),
-                        user.getUsername(),
-                        user.getBio(),
-                        user.getImage()));
+                .fetchOptional(mapping(User::new));
     }
 
     public boolean emailExists(String email) {
