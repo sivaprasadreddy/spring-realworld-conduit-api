@@ -24,13 +24,14 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
+import org.jooq.impl.QOM.ForeignKeyRule;
 
 
 /**
  * A class modelling foreign key relationships and constraints of tables in
  * public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Keys {
 
     // -------------------------------------------------------------------------
@@ -54,13 +55,13 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<ArticleFavoriteRecord, ArticlesRecord> ARTICLE_FAVORITE__FK_ARTICLE_FAVORITE_ARTICLE_ID = Internal.createForeignKey(ArticleFavorite.ARTICLE_FAVORITE, DSL.name("fk_article_favorite_article_id"), new TableField[] { ArticleFavorite.ARTICLE_FAVORITE.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true);
-    public static final ForeignKey<ArticleFavoriteRecord, UsersRecord> ARTICLE_FAVORITE__FK_ARTICLE_FAVORITE_USER_ID = Internal.createForeignKey(ArticleFavorite.ARTICLE_FAVORITE, DSL.name("fk_article_favorite_user_id"), new TableField[] { ArticleFavorite.ARTICLE_FAVORITE.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<ArticleTagRecord, ArticlesRecord> ARTICLE_TAG__FK_ARTICLE_TAG_ARTICLE_ID = Internal.createForeignKey(ArticleTag.ARTICLE_TAG, DSL.name("fk_article_tag_article_id"), new TableField[] { ArticleTag.ARTICLE_TAG.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true);
-    public static final ForeignKey<ArticleTagRecord, TagsRecord> ARTICLE_TAG__FK_ARTICLE_TAG_TAG_ID = Internal.createForeignKey(ArticleTag.ARTICLE_TAG, DSL.name("fk_article_tag_tag_id"), new TableField[] { ArticleTag.ARTICLE_TAG.TAG_ID }, Keys.TAGS_PKEY, new TableField[] { Tags.TAGS.ID }, true);
-    public static final ForeignKey<ArticlesRecord, UsersRecord> ARTICLES__FK_ARTICLES_AUTHOR = Internal.createForeignKey(Articles.ARTICLES, DSL.name("fk_articles_author"), new TableField[] { Articles.ARTICLES.AUTHOR_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<CommentsRecord, ArticlesRecord> COMMENTS__FK_COMMENTS_ARTICLE_ID = Internal.createForeignKey(Comments.COMMENTS, DSL.name("fk_comments_article_id"), new TableField[] { Comments.COMMENTS.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true);
-    public static final ForeignKey<CommentsRecord, UsersRecord> COMMENTS__FK_COMMENTS_AUTHOR_ID = Internal.createForeignKey(Comments.COMMENTS, DSL.name("fk_comments_author_id"), new TableField[] { Comments.COMMENTS.AUTHOR_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<UserFollowerRecord, UsersRecord> USER_FOLLOWER__USER_FOLLOWER_FROM_ID_FKEY = Internal.createForeignKey(UserFollower.USER_FOLLOWER, DSL.name("user_follower_from_id_fkey"), new TableField[] { UserFollower.USER_FOLLOWER.FROM_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<UserFollowerRecord, UsersRecord> USER_FOLLOWER__USER_FOLLOWER_TO_ID_FKEY = Internal.createForeignKey(UserFollower.USER_FOLLOWER, DSL.name("user_follower_to_id_fkey"), new TableField[] { UserFollower.USER_FOLLOWER.TO_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
+    public static final ForeignKey<ArticleFavoriteRecord, ArticlesRecord> ARTICLE_FAVORITE__FK_ARTICLE_FAVORITE_ARTICLE_ID = Internal.createForeignKey(ArticleFavorite.ARTICLE_FAVORITE, DSL.name("fk_article_favorite_article_id"), new TableField[] { ArticleFavorite.ARTICLE_FAVORITE.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<ArticleFavoriteRecord, UsersRecord> ARTICLE_FAVORITE__FK_ARTICLE_FAVORITE_USER_ID = Internal.createForeignKey(ArticleFavorite.ARTICLE_FAVORITE, DSL.name("fk_article_favorite_user_id"), new TableField[] { ArticleFavorite.ARTICLE_FAVORITE.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<ArticleTagRecord, ArticlesRecord> ARTICLE_TAG__FK_ARTICLE_TAG_ARTICLE_ID = Internal.createForeignKey(ArticleTag.ARTICLE_TAG, DSL.name("fk_article_tag_article_id"), new TableField[] { ArticleTag.ARTICLE_TAG.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<ArticleTagRecord, TagsRecord> ARTICLE_TAG__FK_ARTICLE_TAG_TAG_ID = Internal.createForeignKey(ArticleTag.ARTICLE_TAG, DSL.name("fk_article_tag_tag_id"), new TableField[] { ArticleTag.ARTICLE_TAG.TAG_ID }, Keys.TAGS_PKEY, new TableField[] { Tags.TAGS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<ArticlesRecord, UsersRecord> ARTICLES__FK_ARTICLES_AUTHOR = Internal.createForeignKey(Articles.ARTICLES, DSL.name("fk_articles_author"), new TableField[] { Articles.ARTICLES.AUTHOR_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<CommentsRecord, ArticlesRecord> COMMENTS__FK_COMMENTS_ARTICLE_ID = Internal.createForeignKey(Comments.COMMENTS, DSL.name("fk_comments_article_id"), new TableField[] { Comments.COMMENTS.ARTICLE_ID }, Keys.ARTICLES_PKEY, new TableField[] { Articles.ARTICLES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<CommentsRecord, UsersRecord> COMMENTS__FK_COMMENTS_AUTHOR_ID = Internal.createForeignKey(Comments.COMMENTS, DSL.name("fk_comments_author_id"), new TableField[] { Comments.COMMENTS.AUTHOR_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<UserFollowerRecord, UsersRecord> USER_FOLLOWER__USER_FOLLOWER_FROM_ID_FKEY = Internal.createForeignKey(UserFollower.USER_FOLLOWER, DSL.name("user_follower_from_id_fkey"), new TableField[] { UserFollower.USER_FOLLOWER.FROM_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+    public static final ForeignKey<UserFollowerRecord, UsersRecord> USER_FOLLOWER__USER_FOLLOWER_TO_ID_FKEY = Internal.createForeignKey(UserFollower.USER_FOLLOWER, DSL.name("user_follower_to_id_fkey"), new TableField[] { UserFollower.USER_FOLLOWER.TO_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
 }
