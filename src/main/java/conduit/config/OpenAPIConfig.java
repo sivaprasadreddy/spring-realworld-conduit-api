@@ -35,8 +35,7 @@ class OpenAPIConfig {
                 .in(SecurityScheme.In.HEADER)
                 .type(SecurityScheme.Type.APIKEY)
                 .name("Authorization")
-                .description(
-                        """
+                .description("""
                         For accessing the protected API resources, you must have received a a valid JWT token after registering or logging in.
                         This JWT token must then be used for all protected resources by passing it in via the 'Authorization' header.
 

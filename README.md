@@ -10,7 +10,7 @@ which is a Medium.com clone.
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sivaprasadreddy_spring-realworld-conduit-api&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sivaprasadreddy_spring-realworld-conduit-api)
 
 ## Tech Stack
-* [Java 21](https://dev.java/)
+* [Java 25](https://dev.java/)
 * [Spring Boot](https://spring.io/projects/spring-boot)
 * [Spring Security](https://spring.io/projects/spring-security)
 * [Spring Modulith](https://spring.io/projects/spring-modulith)
@@ -22,7 +22,7 @@ which is a Medium.com clone.
 * [Docker Compose](https://docs.docker.com/compose/)
 
 ## Prerequisites
-* JDK 21
+* JDK 25
 * Docker and Docker Compose
 * Your favourite IDE (Recommended: [IntelliJ IDEA](https://www.jetbrains.com/idea/))
 
@@ -31,7 +31,7 @@ Install JDK using [SDKMAN](https://sdkman.io/)
 ```shell
 $ curl -s "https://get.sdkman.io" | bash
 $ source "$HOME/.sdkman/bin/sdkman-init.sh"
-$ sdk install java 21.0.1-tem
+$ sdk install java 25-tem
 $ sdk install maven
 ```
 
@@ -39,23 +39,8 @@ Verify the prerequisites
 
 ```shell
 $ java -version
-openjdk version "21.0.1" 2023-10-17 LTS
-OpenJDK Runtime Environment Temurin-21.0.1+12 (build 21.0.1+12-LTS)
-OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
-
 $ docker info
-Client:
- Version:    27.0.3
- Context:    desktop-linux
- ...
- ...
-Server:
- Server Version: 27.0.3
- ...
- ...
-
 $ docker compose version
-Docker Compose version v2.28.1-desktop.1
 ```
 
 ## How to?
@@ -104,7 +89,6 @@ $ go install github.com/go-task/task/v3/cmd/task@latest
 
 #verify task version
 $ task --version
-Task version: 3.35.1
 ```
 
 ### Using `task` to perform various tasks:

@@ -22,12 +22,10 @@ class UpdateArticleControllerTests extends BaseIT {
     @Test
     void shouldUpdateArticleSuccessfully() throws Exception {
         String token = jwtHelper.generateToken("admin@gmail.com");
-        mockMvc.perform(
-                        put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                               "article": {
                                 "title": "REST APIs testing using Postman and Newman",
@@ -56,12 +54,10 @@ class UpdateArticleControllerTests extends BaseIT {
     @Test
     void shouldNotBeAbleToUpdateOthersArticle() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
-        mockMvc.perform(
-                        put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                               "article": {
                                 "title": "REST APIs testing using Postman and Newman",
@@ -76,12 +72,10 @@ class UpdateArticleControllerTests extends BaseIT {
     @Test
     void shouldThrowNotFoundWhenSlugNotExists() throws Exception {
         String token = jwtHelper.generateToken("admin@gmail.com");
-        mockMvc.perform(
-                        put("/api/articles/{slug}", "non-existing-slug")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(put("/api/articles/{slug}", "non-existing-slug")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                               "article": {
                                 "title": "REST APIs testing using Postman and Newman",
@@ -103,8 +97,7 @@ class UpdateArticleControllerTests extends BaseIT {
         mockMvc.perform(put("/api/articles/{slug}", "testing-rest-apis-with-postman-newman")
                         .header("Authorization", "Token " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                """
+                        .content("""
                             {
                               "article": {
                                 "title": "%s",
@@ -112,8 +105,7 @@ class UpdateArticleControllerTests extends BaseIT {
                                 "body": "Learn how to test REST APIs using Postman and Newman"
                               }
                             }
-                          """
-                                        .formatted(title)))
+                          """.formatted(title)))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

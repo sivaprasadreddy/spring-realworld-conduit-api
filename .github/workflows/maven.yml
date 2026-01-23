@@ -11,12 +11,12 @@ jobs:
     name: Maven Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
-          java-version: '21'
+          java-version: 25
           distribution: 'temurin'
           cache: 'maven'
 
@@ -26,9 +26,9 @@ jobs:
       - name: Build with Maven
         run: ./mvnw -ntp verify
 
-      - if: ${{ github.ref == 'refs/heads/main' }}
-        name: Sonar Scan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw initialize sonar:sonar
+#      - if: ${{ github.ref == 'refs/heads/main' }}
+#        name: Sonar Scan
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: ./mvnw initialize sonar:sonar

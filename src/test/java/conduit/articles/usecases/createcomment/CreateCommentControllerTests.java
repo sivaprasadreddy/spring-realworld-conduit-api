@@ -21,12 +21,10 @@ class CreateCommentControllerTests extends BaseIT {
     @Test
     void shouldCreateCommentSuccessfully() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
-        mockMvc.perform(
-                        post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                                "comment": {
                                  "body": "Very nice post"
@@ -47,12 +45,10 @@ class CreateCommentControllerTests extends BaseIT {
     @Test
     void shouldGetUnprocessableEntityWithoutMandatoryData() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
-        mockMvc.perform(
-                        post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                                "comment": {
                                  "body": ""
@@ -65,11 +61,9 @@ class CreateCommentControllerTests extends BaseIT {
 
     @Test
     void shouldGetUnauthorizedWithoutToken() throws Exception {
-        mockMvc.perform(
-                        post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/articles/{slug}/comments", "testing-rest-apis-with-postman-newman")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                                "comment": {
                                  "body": ""

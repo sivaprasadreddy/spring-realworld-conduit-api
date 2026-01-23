@@ -23,12 +23,10 @@ class CreateArticleControllerTests extends BaseIT {
     @Test
     void shouldCreateArticleSuccessfully() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
-        mockMvc.perform(
-                        post("/api/articles")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/articles")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                             {
                               "article": {
                                 "title": "How to train your dragon",
@@ -64,8 +62,7 @@ class CreateArticleControllerTests extends BaseIT {
         mockMvc.perform(post("/api/articles")
                         .header("Authorization", "Token " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                """
+                        .content("""
                             {
                               "article": {
                                 "title": "%s",
@@ -73,8 +70,7 @@ class CreateArticleControllerTests extends BaseIT {
                                 "body": "body"
                               }
                             }
-                          """
-                                        .formatted(title)))
+                          """.formatted(title)))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

@@ -16,11 +16,9 @@ class RegistrationControllerTests extends BaseIT {
 
     @Test
     void shouldRegisterSuccessfullyGivenValidData() throws Exception {
-        mockMvc.perform(
-                        post("/api/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "username": "Jacob",
@@ -39,11 +37,9 @@ class RegistrationControllerTests extends BaseIT {
 
     @Test
     void shouldFailToRegisterWithExistingEmail() throws Exception {
-        mockMvc.perform(
-                        post("/api/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "username": "SivaPrasad",
@@ -52,17 +48,15 @@ class RegistrationControllerTests extends BaseIT {
                                     }
                                 }
                                 """))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors.body", hasItem("User with email siva@gmail.com already exists")));
     }
 
     @Test
     void shouldFailToRegisterWithExistingUsername() throws Exception {
-        mockMvc.perform(
-                        post("/api/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "username": "siva",
@@ -71,17 +65,15 @@ class RegistrationControllerTests extends BaseIT {
                                     }
                                 }
                                 """))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors.body", hasItem("User with username siva already exists")));
     }
 
     @Test
     void shouldGetUnprocessableEntityWhenMandatoryInputsMissing() throws Exception {
-        mockMvc.perform(
-                        post("/api/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "username": "",
@@ -90,7 +82,7 @@ class RegistrationControllerTests extends BaseIT {
                                     }
                                 }
                                 """))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors.body", hasItem("Username is required")))
                 .andExpect(jsonPath("$.errors.body", hasItem("Email is required")))
                 .andExpect(jsonPath("$.errors.body", hasItem("Password is required")));

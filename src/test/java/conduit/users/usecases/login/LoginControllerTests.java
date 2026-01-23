@@ -17,11 +17,9 @@ class LoginControllerTests extends BaseIT {
 
     @Test
     void shouldLoginSuccessfullyGivenValidCredentials() throws Exception {
-        mockMvc.perform(
-                        post("/api/users/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "email": "siva@gmail.com",
@@ -42,26 +40,22 @@ class LoginControllerTests extends BaseIT {
     void shouldGetUnauthorizedGivenInvalidCredentials(String email, String password) throws Exception {
         mockMvc.perform(post("/api/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                """
+                        .content("""
                                 {
                                     "user": {
                                         "email": "%s",
                                         "password": "%s"
                                     }
                                 }
-                                """
-                                        .formatted(email, password)))
+                                """.formatted(email, password)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldGetUnprocessableEntityWhenMandatoryInputsMissing() throws Exception {
-        mockMvc.perform(
-                        post("/api/users/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "email": "",

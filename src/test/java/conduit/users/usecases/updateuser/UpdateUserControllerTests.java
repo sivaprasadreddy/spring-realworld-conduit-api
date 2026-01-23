@@ -22,12 +22,10 @@ class UpdateUserControllerTests extends BaseIT {
     void shouldUpdateSuccessfullyGivenValidData() throws Exception {
         String token = jwtHelper.generateToken("siva@gmail.com");
 
-        mockMvc.perform(
-                        put("/api/user")
-                                .header("Authorization", "Token " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
+        mockMvc.perform(put("/api/user")
+                        .header("Authorization", "Token " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                                 {
                                     "user": {
                                         "username": "sivanew",
@@ -57,8 +55,7 @@ class UpdateUserControllerTests extends BaseIT {
         mockMvc.perform(put("/api/user")
                         .header("Authorization", "Token " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                """
+                        .content("""
                                 {
                                     "user": {
                                         "username": "%s",
@@ -68,8 +65,7 @@ class UpdateUserControllerTests extends BaseIT {
                                         "image": "https://api.realworld.io/images/demo-avatar.jpg"
                                     }
                                 }
-                                """
-                                        .formatted(username, email)))
+                                """.formatted(username, email)))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

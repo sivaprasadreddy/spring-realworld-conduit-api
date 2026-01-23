@@ -50,7 +50,8 @@ class CreateCommentController {
 
     record CreatedCommentPayloadWrapper(@Valid CreatedCommentPayload comment) {}
 
-    record CreatedCommentPayload(@NotEmpty(message = "{body.required}") String body) {}
+    record CreatedCommentPayload(
+            @NotEmpty(message = "{body.required}") String body) {}
 
     record CreatedCommentResponse(Comment comment) {}
 }
