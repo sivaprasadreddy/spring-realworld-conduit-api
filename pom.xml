@@ -23,7 +23,7 @@
         <jjwt.version>0.13.0</jjwt.version>
         <jooq.version>3.20.10</jooq.version>
 		<springdoc-openapi.version>3.0.0</springdoc-openapi.version>
-        <spotless.version>3.2.0</spotless.version>
+        <spotless.version>3.9.0</spotless.version>
         <testcontainers.version>2.0.3</testcontainers.version>
         <tc-jooq-codegen-plugin.version>0.0.5</tc-jooq-codegen-plugin.version>
         <properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
