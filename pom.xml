@@ -25,7 +25,7 @@
 		<springdoc-openapi.version>3.0.0</springdoc-openapi.version>
         <spotless.version>3.2.0</spotless.version>
         <testcontainers.version>2.0.3</testcontainers.version>
-        <tc-jooq-codegen-plugin.version>0.0.5</tc-jooq-codegen-plugin.version>
+        <tc-jooq-codegen-plugin.version>0.0.6</tc-jooq-codegen-plugin.version>
         <properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
