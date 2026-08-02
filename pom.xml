@@ -28,7 +28,7 @@
         <tc-jooq-codegen-plugin.version>0.0.5</tc-jooq-codegen-plugin.version>
         <properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <jacoco.minimum.coverage>75%</jacoco.minimum.coverage>
         <dockerImageName>sivaprasadreddy/${project.artifactId}</dockerImageName>
 	</properties>
